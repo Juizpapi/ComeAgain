@@ -1,0 +1,458 @@
+/* =====================================================
+   PROFILE PAGE
+===================================================== */
+
+.profile-page{
+
+    min-height:100vh;
+
+    padding:60px 20px;
+
+    background:linear-gradient(
+        135deg,
+        #fff7ed 0%,
+        #ffe7d3 100%
+    );
+
+}
+
+.profile-page hr{
+
+    border:none;
+
+    border-top:1px solid #eee;
+
+    margin:40px 0;
+
+}
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.profile-page{
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+.profile-header,
+.profile-info,
+.profile-actions{
+
+    width:100%;
+    max-width:900px;
+
+    margin:0 auto;
+
+}
+
+.profile-header{
+
+    background:white;
+
+    border-radius:30px 30px 0 0;
+
+    padding:50px 50px 35px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.08);
+
+}
+
+.profile-info{
+
+    background:white;
+
+    padding:0 50px 40px;
+
+}
+
+.profile-actions{
+
+    background:white;
+
+    padding:0 50px 50px;
+
+    border-radius:0 0 30px 30px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.08);
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+}
+
+to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.profile-header{
+
+    text-align:center;
+
+}
+
+.profile-avatar{
+
+    width:130px;
+
+    height:130px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:#ff5722;
+
+    color:white;
+
+    font-size:52px;
+
+    font-weight:bold;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+    border:6px solid white;
+
+}
+
+.profile-avatar-img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+.profile-header h2{
+
+    margin-top:20px;
+
+    font-size:34px;
+
+    color:#222;
+
+}
+
+.profile-header p{
+
+    color:#666;
+
+    margin-top:8px;
+
+}
+
+.profile-role{
+
+    margin-top:15px;
+
+    font-weight:700;
+
+    color:#ff5722;
+
+}
+
+.verified-badge{
+
+    display:inline-block;
+
+    margin-top:20px;
+
+    padding:10px 20px;
+
+    background:#f4fbef;
+
+    border-radius:999px;
+
+    color:#2e7d32;
+
+    font-weight:700;
+
+}
+
+/* =====================================================
+   DETAILS
+===================================================== */
+
+.profile-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+.profile-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:30px;
+
+    background:#fafafa;
+
+    padding:22px;
+
+    border-radius:18px;
+
+}
+
+.profile-row span{
+
+    color:#888;
+
+    font-weight:600;
+
+}
+
+.profile-row strong{
+
+    color:#222;
+
+    font-size:17px;
+
+}
+
+.profile-input{
+
+    width:350px;
+
+    max-width:100%;
+
+    padding:14px 18px;
+
+    border-radius:14px;
+
+    border:1px solid #ddd;
+
+    font-size:16px;
+
+}
+
+.profile-input:focus{
+
+    outline:none;
+
+    border-color:#ff5722;
+
+    box-shadow:0 0 0 4px rgba(255,87,34,.15);
+
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.profile-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:18px;
+
+}
+
+.profile-btn{
+
+    background:white;
+
+    color:#444;
+
+    border:1px solid #eee;
+
+    border-radius:14px;
+
+    padding:15px 26px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.profile-btn:hover{
+
+    color:#ff5722;
+
+    border-color:#ff5722;
+
+    transform:translateY(-4px);
+
+}
+
+/* =====================================================
+   SUCCESS TOAST
+===================================================== */
+
+.success-toast{
+
+    position:fixed;
+
+    top:25px;
+
+    right:25px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    background:white;
+
+    padding:18px 24px;
+
+    border-radius:18px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
+
+    z-index:9999;
+
+    animation:slideIn .45s ease;
+
+}
+
+.success-icon{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:#4caf50;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+
+}
+
+.success-title{
+
+    font-weight:700;
+
+}
+
+.success-message{
+
+    color:#666;
+
+    font-size:14px;
+
+}
+
+.success-close{
+
+    cursor:pointer;
+
+    color:#999;
+
+}
+
+@keyframes slideIn{
+
+from{
+
+    transform:translateX(100px);
+
+    opacity:0;
+
+}
+
+to{
+
+    transform:translateX(0);
+
+    opacity:1;
+
+}
+
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:768px){
+
+.profile-page > div:last-child{
+
+    padding:30px;
+
+}
+
+.profile-row{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+}
+
+.profile-input{
+
+    width:100%;
+
+}
+
+.profile-actions{
+
+    flex-direction:column;
+
+}
+
+.profile-btn{
+
+    width:100%;
+
+}
+
+}

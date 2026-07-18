@@ -1,0 +1,471 @@
+/* =====================================================
+   ORDER PAGE
+   COME AGAIN RESTAURANT
+===================================================== */
+
+.order-page{
+    min-height:100vh;
+    background:linear-gradient(135deg,#fff7ed 0%,#ffe7d3 100%);
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.order-hero{
+
+    background:#f4fbef;
+
+    border-radius:25px;
+
+    padding:50px 60px;
+
+    display:grid;
+
+    grid-template-columns:1fr auto;
+
+    align-items:center;
+
+    gap:70px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    margin-bottom:45px;
+
+}
+
+.order-hero h1{
+    color:#ff5b21;
+    font-size:3rem;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.order-hero p{
+    color:#555;
+    font-size:1.1rem;
+}
+
+/* ===========================
+   NAVIGATION
+=========================== */
+
+.order-brand{
+
+    flex:1;
+
+}
+
+.modern-nav{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+
+    gap:14px;
+
+}
+
+.nav-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    text-decoration:none;
+
+    background:white;
+
+    color:#444;
+
+    padding:14px 22px;
+
+    border-radius:14px;
+
+    border:1px solid #eee;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.nav-btn:hover{
+
+    transform:translateY(-4px);
+
+    color:#ff5722;
+
+    border-color:#ff5722;
+
+}
+
+.nav-badge{
+
+    width:24px;
+
+    height:24px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#ff5722;
+
+    color:white;
+
+    border-radius:50%;
+
+    font-size:13px;
+
+}
+
+.logout-btn{
+
+    cursor:pointer;
+
+}
+
+/* ===========================
+   SEARCH
+=========================== */
+
+.modern-search{
+    display:flex;
+    justify-content:center;
+    margin-bottom:45px;
+}
+
+#food-search{
+    width:500px;
+    max-width:90%;
+
+    padding:18px 24px;
+
+    border:none;
+    border-radius:50px;
+
+    font-size:16px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+/* ===========================
+   CATEGORY
+=========================== */
+
+.menu-category{
+
+    margin-top:50px;
+}
+
+.menu-title{
+
+    color:white;
+
+    font-size:32px;
+
+    margin-bottom:25px;
+}
+
+/* ===========================
+   GRID
+=========================== */
+
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:30px;
+}
+
+/* ===========================
+   CARD
+=========================== */
+
+.food-card{
+    background:white;
+    border-radius:25px;
+    padding:25px;
+    position:relative;
+
+    transition:.25s;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.food-card:hover{
+    transform:translateY(-8px);
+}
+
+.food-card h4{
+
+    font-size:24px;
+
+    color:#222;
+
+    margin-bottom:12px;
+}
+
+.food-card p{
+
+    color:#666;
+
+    line-height:1.7;
+}
+
+/* ===========================
+   FAVOURITE
+=========================== */
+
+.favorite-btn{
+    position:absolute;
+    right:20px;
+    top:20px;
+
+    width:46px;
+    height:46px;
+
+    border:none;
+    border-radius:50%;
+
+    background:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+}
+
+.favorite-btn:hover{
+
+    transform:scale(1.15);
+}
+
+/* ===========================
+   ADDONS
+=========================== */
+
+.addons-box{
+
+    margin-top:18px;
+
+    background:#fff7ed;
+
+    border-radius:16px;
+
+    padding:18px;
+}
+
+.addons-box strong{
+
+    color:#ff5722;
+
+    display:block;
+
+    margin-bottom:12px;
+}
+
+.addon{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:10px;
+
+    color:#444;
+}
+
+/* ===========================
+   QUANTITY
+=========================== */
+
+.add-to-cart-form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    margin-top:auto;
+}
+
+.add-to-cart-form input[type="number"]{
+
+    width:80px;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+}
+
+/* ===========================
+   BUTTON
+=========================== */
+
+.food-card .order-btn{
+    width:100%;
+    margin-top:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#fff;
+    color:#444;
+
+    border:1px solid #eee;
+    border-radius:14px;
+
+    padding:14px;
+
+    font-size:16px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.food-card .order-btn:hover{
+    color:#ff5722;
+    border-color:#ff5722;
+    transform:translateY(-4px);
+}
+
+.order-content{
+    background:#fff7ef;
+    border-radius:25px;
+    padding:50px;
+    box-shadow:0 15px 40px rgba(0,0,0,.06);
+}
+
+.order-category{
+
+    margin-top:60px;
+
+}
+
+.order-category-title{
+    font-size:2rem;
+    color:#111;
+    margin:50px 0 25px;
+}
+
+
+
+
+/* ===========================
+   responsive rule
+=========================== */
+
+@media(max-width:900px){
+
+.order-hero{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:60px;
+
+    background:#f4fbef;
+    border-radius:25px;
+    padding:55px;
+    margin-bottom:40px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+.order-hero h1{
+
+    white-space:nowrap;
+
+}
+
+.order-header-links{
+
+justify-content:center;
+
+}
+
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+.modern-footer{
+
+    margin-top:60px;
+
+    background:#1f1f1f;
+
+    color:white;
+
+    padding:25px;
+
+    border-radius:18px;
+
+    text-align:center;
+
+    font-size:15px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+}
+
+/* ===========================
+   ORDER HEADING
+=========================== */
+
+
+.order-heading{
+
+    text-align:center;
+
+    font-size:42px;
+
+    color:#ff5b21;
+
+    margin:20px 0 50px;
+
+    font-weight:800;
+
+}
+
+/* ===========================
+   HERO TITLE
+=========================== */
+
+.hero-title{
+
+font-size:56px;
+
+font-weight:800;
+
+color:#ff5722;
+
+margin-bottom:15px;
+
+}
+
+.hero-text{
+
+    color:#555;
+
+    font-size:1.2rem;
+
+}

@@ -1,0 +1,17 @@
+{
+  "name": "comeagain-res",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "client": "cd client && npm run dev -- --host 0.0.0.0",
+    "server": "cd server && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  },
+  "dependencies": {
+    "mongoose": "^9.7.4",
+    "mysql2": "^3.22.6"
+  }
+}

@@ -1,0 +1,470 @@
+/* =====================================================
+   LOGIN PAGE
+===================================================== */
+
+.login-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:60px 20px;
+
+    background:linear-gradient(
+        135deg,
+        #fff7ed 0%,
+        #ffe7d3 100%
+    );
+
+}
+
+.login-card{
+
+    width:100%;
+    max-width:520px;
+
+    background:white;
+
+    border-radius:30px;
+
+    padding:50px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.08);
+
+}
+
+.login-card{
+
+    animation:fadeUp .6s ease;
+
+}
+
+@keyframes fadeUp{
+
+from{
+
+    opacity:0;
+
+    transform:translateY(35px);
+
+}
+
+to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+}
+
+/* ===========================
+   BRAND
+=========================== */
+
+.login-brand{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.login-logo{
+
+    width:90px;
+
+    margin-bottom:18px;
+
+}
+
+.login-brand h1{
+
+    color:#ff5722;
+
+    font-size:42px;
+
+    font-weight:800;
+
+    margin:0;
+
+}
+
+.login-brand p{
+
+    color:#777;
+
+    margin-top:6px;
+
+}
+
+.login-heading{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.login-heading h2{
+
+    font-size:30px;
+
+    color:#222;
+
+    margin-bottom:10px;
+
+}
+
+.login-heading p{
+
+    color:#666;
+
+}
+
+.login-message{
+
+    background:#fff3cd;
+
+    color:#856404;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    margin-bottom:22px;
+
+    text-align:center;
+
+}
+
+.login-form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+}
+
+.login-form input{
+
+    padding:18px;
+
+    border-radius:14px;
+
+    border:1px solid #ddd;
+
+    font-size:16px;
+
+    transition:.3s;
+
+}
+
+.login-form input:focus{
+
+    outline:none;
+
+    border-color:#ff5722;
+
+    box-shadow:0 0 0 4px rgba(255,87,34,.15);
+
+}
+
+.login-btn{
+
+    background:#fff;
+
+    color:#444;
+
+    border:1px solid #eee;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.login-btn:hover{
+
+    color:#ff5722;
+
+    border-color:#ff5722;
+
+    transform:translateY(-4px);
+
+}
+
+.login-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:25px;
+
+}
+
+.login-footer a{
+
+    text-decoration:none;
+
+    color:#666;
+
+    font-weight:600;
+
+}
+
+.login-footer a:hover{
+
+    color:#ff5722;
+
+}
+
+.register-text{
+
+    margin-top:30px;
+
+    text-align:center;
+
+    color:#666;
+
+}
+
+.register-text a{
+
+    color:#ff5722;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    margin-left:6px;
+
+}
+
+@media(max-width:600px){
+
+.login-card{
+
+    padding:35px 25px;
+
+}
+
+.login-brand h1{
+
+    font-size:34px;
+
+}
+
+.login-heading h2{
+
+    font-size:24px;
+
+}
+
+}
+
+/* ===========================
+   PASSWORD
+=========================== */
+
+.password-box{
+
+    position:relative;
+
+}
+
+.password-box input{
+
+    width:100%;
+
+    padding-right:60px;
+
+}
+
+.password-toggle{
+
+    position:absolute;
+
+    right:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+    color:#888;
+
+    font-size:18px;
+
+}
+
+.password-toggle:hover{
+
+    color:#ff5722;
+
+}
+
+/* ===========================
+   REMEMBER ME
+=========================== */
+
+.remember-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:-8px;
+
+    margin-bottom:8px;
+
+}
+
+.remember-row label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:#666;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+.remember-row input{
+
+    width:18px;
+
+    height:18px;
+
+}
+
+
+/* ===========================
+   GOOGLE LOGIN
+=========================== */
+
+.google-btn{
+
+    width:100%;
+
+    margin-top:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:14px;
+
+    background:white;
+
+    color:#444;
+
+    border:1px solid #ddd;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.google-btn:hover{
+
+    color:#ff5722;
+
+    border-color:#ff5722;
+
+    transform:translateY(-4px);
+
+}
+
+.google-icon{
+
+    width:24px;
+
+    height:24px;
+
+}
+
+
+/* ===========================
+   RESEND VERIFICATION
+=========================== */
+
+.resend-verification{
+  margin-top:20px;
+  padding:18px;
+  background:#fff8f4;
+  border:1px solid rgba(255,87,34,.18);
+  border-radius:12px;
+  text-align:center;
+}
+
+.resend-verification p{
+  margin:0 0 12px;
+  color:#555;
+  font-size:.95rem;
+  font-weight:500;
+}
+
+.resend-verification input{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:1rem;
+  outline:none;
+  margin-bottom:12px;
+  transition:.25s;
+}
+
+.resend-verification input:focus{
+  border-color:#ff5722;
+  box-shadow:0 0 0 3px rgba(255,87,34,.15);
+}
+
+.resend-verification button{
+  width:100%;
+}

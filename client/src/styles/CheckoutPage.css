@@ -1,0 +1,313 @@
+/* =====================================================
+   CHECKOUT PAGE
+   COME AGAIN RESTAURANT
+===================================================== */
+
+.checkout-page{
+
+    min-height:100vh;
+
+    background:linear-gradient(135deg,#fff7ed 0%,#ffe7d3 100%);
+
+    padding:50px;
+
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.checkout-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:#f4fbef;
+
+    padding:45px 55px;
+
+    border-radius:25px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    margin-bottom:45px;
+
+}
+
+.checkout-eyebrow{
+
+    color:#ff5722;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    margin-bottom:10px;
+
+}
+
+.checkout-title{
+
+    font-size:48px;
+
+    color:#ff5722;
+
+    font-weight:800;
+
+}
+
+/* ===========================
+   CARD
+=========================== */
+
+.checkout-payment-card{
+
+    max-width:760px;
+
+    margin:auto;
+
+    background:white;
+
+    padding:45px;
+
+    border-radius:25px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+}
+
+.checkout-card-title{
+
+    font-size:34px;
+
+    color:#ff5722;
+
+    margin-bottom:15px;
+
+}
+
+.checkout-status{
+
+    background:#fff7ed;
+
+    padding:18px;
+
+    border-radius:15px;
+
+    color:#555;
+
+    margin-bottom:30px;
+
+    line-height:1.7;
+
+}
+
+/* ===========================
+   FORM
+=========================== */
+
+.checkout-label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#444;
+
+    font-weight:700;
+
+}
+
+.checkout-select{
+
+    width:100%;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    border:1px solid #ddd;
+
+    font-size:16px;
+
+    margin-bottom:35px;
+
+    outline:none;
+
+}
+
+.checkout-select:focus{
+
+    border-color:#ff5722;
+
+}
+
+/* ===========================
+   SUMMARY
+=========================== */
+
+.checkout-summary-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #eee;
+
+    color:#444;
+
+}
+
+.checkout-summary-row strong{
+
+    color:#111;
+
+}
+
+.checkout-total-row{
+
+    margin-top:20px;
+
+}
+
+.checkout-grand-total{
+
+    font-size:22px;
+
+    font-weight:800;
+
+    color:#ff5722;
+
+    border-bottom:none;
+
+    margin:18px 0 30px;
+
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.checkout-primary-btn{
+    width:100%;
+    margin-top:25px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#ffffff;
+    color:#444;
+
+    border:1px solid #ececec;
+    border-radius:14px;
+
+    padding:16px;
+
+    font-size:16px;
+    font-weight:700;
+
+    text-decoration:none;
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+.checkout-primary-btn:hover:not(:disabled){
+
+    color:#ff5722;
+    border-color:#ff5722;
+    transform:translateY(-4px);
+
+}
+
+.checkout-primary-btn:disabled{
+
+    opacity:.6;
+    cursor:not-allowed;
+
+}
+
+.checkout-secondary-btn{
+
+    width:100%;
+    margin-top:15px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#ffffff;
+    color:#444;
+
+    border:1px solid #ececec;
+    border-radius:14px;
+
+    padding:16px;
+
+    font-size:16px;
+    font-weight:700;
+
+    text-decoration:none;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+.checkout-secondary-btn:hover{
+
+    color:#ff5722;
+    border-color:#ff5722;
+    transform:translateY(-4px);
+
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:768px){
+
+.checkout-page{
+
+    padding:20px;
+
+}
+
+.checkout-header{
+
+    padding:30px;
+
+}
+
+.checkout-title{
+
+    font-size:34px;
+
+}
+
+.checkout-payment-card{
+
+    padding:25px;
+
+}
+
+}
+
