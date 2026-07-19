@@ -5,7 +5,6 @@ import {
   register,
   login,
   googleLogin,
-  verifyEmail,
   forgotPassword,
   resetPassword,
   resendVerificationEmail,
