@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { OAuth2Client } from "google-auth-library";
+import admin from "../config/firebaseAdmin.js";
 import User from "../models/User.js";
 
 
-const googleClient = new OAuth2Client();
+
 
 // REGISTER
 export const register = async (req, res) => {
@@ -464,16 +464,12 @@ export const googleLogin = async (req, res) => {
       });
     }
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken,
-    });
+const decodedToken = await admin.verifyIdToken(idToken);
 
-    const payload = ticket.getPayload();
+const email = decodedToken.email;
 
-    const email = payload.email;
-
-    const username =
-      payload.name || email.split("@")[0];
+const username =
+  decodedToken.name || email.split("@")[0];
 
     let user = await User.findOne({ email });
 
