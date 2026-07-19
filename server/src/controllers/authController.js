@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import User from "../models/User.js";
-import { sendEmail } from "../services/emailService.js";
+
 
 const googleClient = new OAuth2Client();
 
