@@ -25,8 +25,14 @@ export const sendEmail = async ({ to, subject, html }) => {
 
     return info;
   } catch (err) {
-    console.error("❌ Gmail Error:");
-    console.error(err);
-    throw err;
-  }
+  console.error("❌ Gmail Error:");
+  console.error(err);
+
+  console.error("Code:", err.code);
+  console.error("Command:", err.command);
+  console.error("Response:", err.response);
+  console.error("ResponseCode:", err.responseCode);
+
+  throw err;
+}
 };
