@@ -158,11 +158,12 @@ export const login = async (req, res) => {
       });
     }
 
-    if (!user.is_confirmed) {
-  return res.status(403).json({
-    message: "Please verify your email before logging in.",
-  });
-}
+    // TEMPORARILY DISABLED UNTIL EMAIL SERVICE IS WORKING
+// if (!user.is_confirmed) {
+//   return res.status(403).json({
+//     message: "Please verify your email before logging in.",
+//   });
+// }
 
     // Compare password
     const validPassword = await bcrypt.compare(password, user.password);
