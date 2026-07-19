@@ -22,14 +22,12 @@ router.post("/google-login", googleLogin);
 
 router.post("/forgot-password", forgotPassword);
 
-router.post(
-  "/resend-verification",
-  resendVerificationEmail
-);
+
 
 router.post("/reset-password/:token", resetPassword);
-
+/*
 router.get("/verify-email/:token", verifyEmail);
+*/
 router.get("/profile", protect, (req, res) => {
   res.json({
     message: "Profile loaded successfully",

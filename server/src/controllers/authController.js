@@ -65,7 +65,7 @@ if (!emailRegex.test(email)) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const verificationToken = crypto.randomBytes(32).toString("hex");
+    
 
 const user = await User.create({
   username,
@@ -74,46 +74,12 @@ const user = await User.create({
   role: role || "user",
 
   is_confirmed: true,
-  verificationToken,
-  verificationTokenExpires: Date.now() + 1000 * 60 * 60 * 24, // 24 hours
+ 
 });
 
-const verifyLink =
-  `http://localhost:5000/api/auth/verify-email/${verificationToken}`;
 
-  console.log("📧 Sending verification email to:", user.email);
-console.log("🔗 Verification link:", verifyLink);
 
-/*
-await sendEmail({
-  to: user.email,
-  subject: "Verify your Come Again Restaurant account",
-  html: `
-    <h2>Welcome to Come Again Restaurant!</h2>
 
-    <p>Thank you for creating an account.</p>
-
-    <p>Please click the button below to verify your email.</p>
-
-    <p>
-      <a href="${verifyLink}"
-      style="
-        background:#ff5722;
-        color:white;
-        padding:12px 20px;
-        text-decoration:none;
-        border-radius:6px;
-      ">
-      Verify Email
-      </a>
-    </p>
-
-    <p>This link expires in 24 hours.</p>
-  `,
-});
-*/
-
-console.log("✅ Verification email sent.");
 
     const userResponse = {
       id: user._id,
@@ -160,12 +126,7 @@ export const login = async (req, res) => {
       });
     }
 
-    // TEMPORARILY DISABLED UNTIL EMAIL SERVICE IS WORKING
-// if (!user.is_confirmed) {
-//   return res.status(403).json({
-//     message: "Please verify your email before logging in.",
-//   });
-// }
+
 
     // Compare password
     const validPassword = await bcrypt.compare(password, user.password);
@@ -331,9 +292,9 @@ export const forgotPassword = async (req, res) => {
           "If an account with that email exists, a reset link has been sent.",
       });
     }
-
-    const resetToken = crypto.randomBytes(32).toString("hex");
-
+/*
+const resetToken = crypto.randomBytes(32).toString("hex");
+*/
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires =
       Date.now() + 1000 * 60 * 60; // 1 hour
