@@ -73,7 +73,7 @@ const user = await User.create({
   password: hashedPassword,
   role: role || "user",
 
-  is_confirmed: false,
+  is_confirmed: true,
   verificationToken,
   verificationTokenExpires: Date.now() + 1000 * 60 * 60 * 24, // 24 hours
 });
@@ -84,6 +84,7 @@ const verifyLink =
   console.log("📧 Sending verification email to:", user.email);
 console.log("🔗 Verification link:", verifyLink);
 
+/*
 await sendEmail({
   to: user.email,
   subject: "Verify your Come Again Restaurant account",
@@ -110,6 +111,7 @@ await sendEmail({
     <p>This link expires in 24 hours.</p>
   `,
 });
+*/
 
 console.log("✅ Verification email sent.");
 
@@ -123,7 +125,7 @@ console.log("✅ Verification email sent.");
 
     res.status(201).json({
       message:
-  "Account created successfully. Please check your email to verify your account.",
+  "Account created successfully. You can now log in.",
       user: userResponse,
     });
 
