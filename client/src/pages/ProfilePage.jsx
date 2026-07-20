@@ -139,7 +139,7 @@ const handleAvatarUpload = async (event) => {
   {user?.avatar ? (
 
     <img
-      src={`https://comeagain.onrender.com/uploads/${user.avatar}`}
+      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`}
       alt="Profile"
       className="profile-avatar-img"
     />
