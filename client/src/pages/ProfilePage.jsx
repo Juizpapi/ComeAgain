@@ -139,7 +139,7 @@ const handleAvatarUpload = async (event) => {
   {user?.avatar ? (
 
     <img
-      src={`http://localhost:5000/uploads/${user.avatar}`}
+      src={`https://comeagain.onrender.com/uploads/${user.avatar}`}
       alt="Profile"
       className="profile-avatar-img"
     />
