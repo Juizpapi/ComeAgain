@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { request } from '../lib/api';
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../firebase";
 import "../styles/LoginPage.css";
 
 function LoginPage() {
@@ -62,54 +60,8 @@ useEffect(() => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-
-  try {
-
-    const result = await signInWithPopup(
-      auth,
-      googleProvider
-    );
-
-    const idToken =
-      await result.user.getIdToken();
-
-    const data = await request(
-      "/auth/google-login",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          idToken,
-        }),
-      }
-    );
-
-    localStorage.setItem(
-      "comeagain_token",
-      data.token
-    );
-
-    localStorage.setItem(
-      "comeagain_user",
-      JSON.stringify(data.user)
-    );
-
-    navigate(
-      location.state?.from || "/"
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    setMessage(
-      "Google login failed."
-    );
-
-  }
-
-};
-
+ 
+    
 const handleResendVerification = async () => {
 
   try {
@@ -236,19 +188,6 @@ const handleResendVerification = async () => {
         {isSubmitting ? "Signing In..." : "Login"}
       </button>
 
-<button
-  type="button"
-  className="google-btn"
-  onClick={handleGoogleLogin}
->
-  <img
-    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-    alt="Google"
-    className="google-icon"
-  />
-
-  Continue with Google
-</button>
 
     </form>
 
