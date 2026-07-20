@@ -418,34 +418,209 @@ to{
 }
 
 /* ===========================
-   RESPONSIVE
+   MOBILE VERSION
 =========================== */
 
-@media(max-width:900px){
+@media(max-width:768px){
+
+
+.admin-orders-page{
+
+    padding:25px 12px;
+
+}
+
+
+/* HEADER */
 
 .admin-orders-header{
 
-    flex-direction:column;
-
-}
-
-.admin-orders-card{
+    display:flex;
 
     flex-direction:column;
 
+    align-items:center;
+
+    text-align:center;
+
+    gap:25px;
+
 }
 
-.admin-orders-actions{
+
+.admin-orders-header h1{
+
+    font-size:30px;
+
+    line-height:1.2;
+
+}
+
+
+.admin-orders-eyebrow{
+
+    font-size:13px;
+
+}
+
+
+
+/* BACK HOME BUTTON */
+
+.admin-orders-header > .admin-orders-btn{
 
     width:100%;
 
 }
+
+
+
+/* STATS */
+
+.admin-orders-stats{
+
+    grid-template-columns:1fr 1fr;
+
+    width:100%;
+
+    gap:12px;
+
+}
+
+
+.admin-orders-stat-card{
+
+    padding:15px;
+
+    border-radius:18px;
+
+}
+
+
+.admin-orders-stat-card h2{
+
+    font-size:28px;
+
+}
+
+
+.admin-orders-stat-card p{
+
+    font-size:13px;
+
+}
+
+
+
+/* FILTER BUTTONS */
+
+.admin-orders-filters{
+
+    display:flex;
+
+    flex-direction:column;
+
+    width:100%;
+
+    gap:10px;
+
+}
+
+
+.admin-orders-filters button{
+
+    width:100%;
+
+    padding:12px;
+
+}
+
+
+
+/* ORDER CARD */
+
+.admin-orders-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+
+    padding:20px;
+
+    border-radius:20px;
+
+}
+
+
+
+/* ORDER DETAILS */
+
+.admin-orders-card h3{
+
+    font-size:22px;
+
+}
+
+
+.admin-orders-card p{
+
+    font-size:14px;
+
+}
+
+
+
+/* ACTION BUTTONS */
+
+.admin-orders-actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    width:100%;
+
+    gap:10px;
+
+}
+
 
 .admin-orders-actions button{
 
     width:100%;
 
 }
+
+
+
+/* STATUS */
+
+.admin-orders-status{
+
+    margin-top:8px;
+
+    margin-left:0;
+
+}
+
+
+
+/* TOAST */
+
+.admin-orders-toast{
+
+    left:15px;
+
+    right:15px;
+
+    top:15px;
+
+    text-align:center;
+
+}
+
 
 }
 
