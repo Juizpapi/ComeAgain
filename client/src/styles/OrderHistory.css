@@ -264,28 +264,150 @@
 
 }
 
-/* ===========================
-   RESPONSIVE
-=========================== */
+/* =====================================================
+   MOBILE
+===================================================== */
 
-@media(max-width:850px){
+@media (max-width:768px){
 
-.history-details{
+    /* PAGE */
 
-    grid-template-columns:1fr;
+    .history-page{
 
-}
+        padding:15px 10px;
 
-.history-nav{
+    }
 
-    justify-content:center;
 
-}
+    /* CONTAINER */
 
-.history-heading{
+    .history-container{
 
-    font-size:38px;
+        width:100%;
 
-}
+    }
+
+
+    /* TOP NAV */
+
+    .history-nav{
+
+        justify-content:center;
+
+        gap:8px;
+
+        margin-bottom:20px;
+
+    }
+
+
+    .history-nav span{
+
+        display:none;
+
+    }
+
+
+    /* HEADING */
+
+    .history-heading{
+
+        font-size:30px;
+
+        margin-bottom:25px;
+
+    }
+
+
+    /* EMPTY */
+
+    .history-empty{
+
+        padding:25px 15px;
+
+        font-size:16px;
+
+        border-radius:18px;
+
+    }
+
+
+    /* CARD */
+
+    .history-card{
+
+        padding:18px;
+
+        border-radius:18px;
+
+        margin-bottom:18px;
+
+    }
+
+
+    .history-order-title{
+
+        font-size:20px;
+
+        margin-bottom:15px;
+
+    }
+
+
+    /* DETAILS */
+
+    .history-details{
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:18px;
+
+    }
+
+
+    .history-items p{
+
+        font-size:14px;
+
+        line-height:1.5;
+
+    }
+
+
+    .history-items small{
+
+        margin-left:0;
+
+        margin-top:3px;
+
+    }
+
+
+    /* STATUS BADGE */
+
+    .history-status{
+
+        font-size:12px;
+
+        padding:6px 10px;
+
+    }
+
+
+    /* BACK BUTTON */
+
+    .history-container > .nav-btn{
+
+        display:flex;
+
+        justify-content:center;
+
+        width:100%;
+
+        margin-top:20px;
+
+    }
 
 }
