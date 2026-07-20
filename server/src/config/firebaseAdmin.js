@@ -3,7 +3,7 @@ import { getAuth } from "firebase-admin/auth";
 import fs from "fs";
 
 const serviceAccount = JSON.parse(
-  fs.readFileSync("./firebase-service-account.json", "utf8")
+  process.env.FIREBASE_SERVICE_ACCOUNT
 );
 
 initializeApp({
