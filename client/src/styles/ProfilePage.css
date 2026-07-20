@@ -418,31 +418,149 @@ to{
 }
 
 /* =====================================================
-   MOBILE RESPONSIVE
+   MOBILE VERSION
+   320px - 768px
 ===================================================== */
 
-@media(max-width:768px){
+@media (max-width:768px){
 
+
+    /* PAGE */
     .profile-page{
+
         padding:15px 10px;
+
+        width:100%;
+
+        box-sizing:border-box;
+
     }
 
+
+    /* TOP PROFILE CARD */
 
     .profile-header{
 
+        width:100%;
+
         padding:25px 15px 20px;
+
+        box-sizing:border-box;
+
+        border-radius:25px 25px 0 0;
 
     }
 
+
+    .profile-avatar{
+
+        width:85px;
+
+        height:85px;
+
+        font-size:32px;
+
+    }
+
+
+    .profile-header h2{
+
+        font-size:22px;
+
+        margin-top:12px;
+
+    }
+
+
+    .profile-header p{
+
+        font-size:14px;
+
+        margin-top:5px;
+
+        word-break:break-word;
+
+    }
+
+
+    .profile-role{
+
+        margin-top:10px;
+
+        font-size:14px;
+
+    }
+
+
+    .verified-badge{
+
+        margin-top:10px;
+
+        padding:7px 14px;
+
+        font-size:12px;
+
+    }
+
+
+
+    /* INFORMATION SECTION */
 
     .profile-info{
 
         padding:0 15px 20px;
 
-        gap:10px;
+        gap:12px;
 
     }
 
+
+    .profile-row{
+
+        display:flex;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:5px;
+
+        padding:14px;
+
+        width:100%;
+
+        box-sizing:border-box;
+
+    }
+
+
+    .profile-row span{
+
+        font-size:13px;
+
+    }
+
+
+    .profile-row strong{
+
+        font-size:15px;
+
+        word-break:break-word;
+
+    }
+
+
+    .profile-input{
+
+        width:100%;
+
+        box-sizing:border-box;
+
+    }
+
+
+
+    /* BUTTON SECTION */
 
     .profile-actions{
 
@@ -454,91 +572,36 @@ to{
 
         align-items:center;
 
-        gap:10px;
+        gap:8px;
 
         flex-wrap:nowrap;
 
         padding:20px 10px 25px;
 
-    }
+        width:100%;
 
-
-    .profile-avatar{
-
-        width:85px;
-        height:85px;
-        font-size:34px;
-
-    }
-
-
-    .profile-header h2{
-
-        margin-top:12px;
-        font-size:22px;
-
-    }
-
-
-    .profile-header p{
-
-        margin-top:4px;
-        font-size:14px;
-
-    }
-
-
-    .profile-role{
-
-        margin-top:8px;
-
-    }
-
-
-    .verified-badge{
-
-        margin-top:10px;
-        padding:7px 12px;
-        font-size:12px;
-
-    }
-
-
-    .profile-row{
-
-        padding:12px;
-
-        gap:6px;
-
-    }
-
-
-    .profile-row strong{
-
-        font-size:14px;
+        box-sizing:border-box;
 
     }
 
 
     .profile-btn{
 
-    background:white;
+        flex:1;
 
-    color:#444;
+        min-width:0;
 
-    border:1px solid #eee;
+        padding:11px 5px;
 
-    border-radius:14px;
+        font-size:12px;
 
-    padding:15px 26px;
+        border-radius:12px;
 
-    font-weight:700;
+        white-space:nowrap;
 
-    cursor:pointer;
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
 
-    transition:.3s;
+    }
 
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
 
-}
 }
