@@ -38,7 +38,7 @@ setForm({
 });
 
 setMessage(
-  "✅ Account created successfully! Please check your email and click the verification link before logging in."
+  "✅ Account created successfully! Please log in.."
 );
 
 setTimeout(() => {
