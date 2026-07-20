@@ -472,10 +472,20 @@
 }
 
 /* ===========================
-   RESPONSIVE
+   MOBILE VERSION
 =========================== */
 
-@media(max-width:900px){
+@media(max-width:768px){
+
+
+.cart-page{
+
+    padding:20px 12px;
+
+}
+
+
+/* HEADER */
 
 .cart-header{
 
@@ -483,63 +493,243 @@
 
     text-align:center;
 
+    align-items:center;
+
+    padding:25px 15px;
+
+    gap:20px;
+
+    border-radius:20px;
+
 }
+
+
+.cart-heading{
+
+    font-size:28px;
+
+    line-height:1.3;
+
+}
+
+
+.cart-eyebrow{
+
+    font-size:13px;
+
+}
+
+
+
+/* HEADER BUTTON */
+
+.cart-header .cart-btn{
+
+    width:100%;
+
+}
+
+
+
+/* MAIN CONTENT */
 
 .cart-container{
 
-    grid-template-columns:1fr;
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
 
 }
+
+
+
+/* CART ITEMS */
 
 .cart-item{
 
     flex-direction:column;
 
-    align-items:flex-start;
+    align-items:stretch;
+
+    padding:20px;
+
+    gap:20px;
+
+    border-radius:18px;
 
 }
+
+
+.cart-item h3{
+
+    font-size:21px;
+
+}
+
+
+.cart-item p{
+
+    font-size:14px;
+
+}
+
+
+
+/* ITEM ACTIONS */
 
 .cart-item-actions{
 
     width:100%;
 
-    align-items:stretch;
+    align-items:center;
+
+    flex-direction:column;
+
+    gap:15px;
 
 }
+
+
+.cart-quantity{
+
+    justify-content:center;
+
+}
+
+
+.cart-quantity button{
+
+    width:38px;
+
+    height:38px;
+
+}
+
+
+
+/* REMOVE BUTTON */
+
+.cart-remove-btn{
+
+    width:100%;
+
+}
+
+
+
+/* SUMMARY */
 
 .cart-summary{
 
     position:static;
 
-}
-
-}
-
-@media(max-width:600px){
-
-.cart-page{
-
-    padding:25px 15px;
-
-}
-
-.cart-title{
-
-    font-size:30px;
-
-}
-
-.cart-item{
+    width:100%;
 
     padding:22px;
 
+    border-radius:20px;
+
 }
+
+
+.cart-summary-row{
+
+    font-size:15px;
+
+}
+
+
+.cart-total{
+
+    font-size:20px;
+
+}
+
+
+
+/* CHECKOUT BUTTONS */
+
+.cart-wide-btn{
+
+    width:100%;
+
+    padding:14px;
+
+}
+
+
+
+/* EMPTY CART */
 
 .cart-empty{
 
-    padding:45px 25px;
+    padding:40px 20px;
 
 }
+
+
+.cart-empty h2{
+
+    font-size:28px;
+
+}
+
+
+.cart-empty p{
+
+    font-size:15px;
+
+}
+
+
+
+}
+
+
+
+/* ===========================
+   VERY SMALL PHONES
+=========================== */
+
+@media(max-width:400px){
+
+
+.cart-page{
+
+    padding:15px 8px;
+
+}
+
+
+.cart-heading{
+
+    font-size:24px;
+
+}
+
+
+.cart-title{
+
+    font-size:26px;
+
+}
+
+
+.cart-item{
+
+    padding:16px;
+
+}
+
+
+.cart-summary{
+
+    padding:18px;
+
+}
+
 
 }
 
