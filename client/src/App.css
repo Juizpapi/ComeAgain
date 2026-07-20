@@ -2634,3 +2634,321 @@ font-size:34px;
     border-color:#ff5722;
 
 }
+
+
+
+/* =====================================================
+   HOME PAGE MOBILE RESPONSIVE FIX
+   COME AGAIN RESTAURANT
+===================================================== */
+
+@media (max-width: 768px){
+
+/* MAIN PAGE */
+.legacy-page{
+    overflow-x:hidden;
+}
+
+
+/* ===========================
+   HEADER MOBILE
+=========================== */
+
+.modern-header{
+
+    flex-direction:column;
+    gap:20px;
+    padding:20px;
+
+    text-align:center;
+
+}
+
+
+.brand{
+
+    justify-content:center;
+}
+
+
+.restaurant-logo{
+
+    width:65px;
+}
+
+
+.brand h1{
+
+    font-size:28px;
+
+}
+
+
+.header-text h2{
+
+    font-size:22px;
+
+}
+
+
+.header-actions{
+
+    width:100%;
+    justify-content:center;
+
+}
+
+
+
+/* ===========================
+   HERO MOBILE
+=========================== */
+
+.hero-section{
+
+    padding:25px 15px;
+
+}
+
+
+.hero-content{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:35px;
+
+}
+
+
+.hero-text{
+
+    text-align:center;
+
+}
+
+
+.hero-text h1{
+
+    font-size:32px;
+    line-height:1.2;
+
+}
+
+
+.hero-text h3{
+
+    font-size:20px;
+
+}
+
+
+.hero-text p{
+
+    font-size:15px;
+
+}
+
+
+
+/* THIS FIXES THE DOT IMAGE */
+.hero-image{
+
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+
+.hero-image img{
+
+    width:100%;
+    max-width:340px;
+
+    height:auto;
+
+    display:block;
+
+    object-fit:contain;
+
+}
+
+
+
+/* ===========================
+   HERO BUTTONS
+=========================== */
+
+.hero-buttons{
+
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+
+}
+
+
+.nav-btn{
+
+    width:100%;
+    text-align:center;
+
+}
+
+
+
+/* ===========================
+   FEATURES
+=========================== */
+
+
+.features-section{
+
+    grid-template-columns:1fr;
+
+    padding:30px 15px;
+
+}
+
+
+.feature-card{
+
+    padding:25px;
+
+}
+
+
+
+/* ===========================
+   FOOD GALLERY
+=========================== */
+
+.food-gallery{
+
+    grid-template-columns:1fr;
+
+}
+
+
+.food-item img{
+
+    width:100%;
+    height:auto;
+
+}
+
+
+
+/* ===========================
+   WHY US
+=========================== */
+
+
+.why-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+/* ===========================
+   REVIEWS
+=========================== */
+
+
+.reviews-container{
+
+    flex-direction:column;
+
+}
+
+
+.review-card{
+
+    width:100%;
+
+}
+
+
+
+/* ===========================
+   MAP
+=========================== */
+
+
+.map-container iframe{
+
+    height:300px;
+
+}
+
+
+
+/* ===========================
+   CONTACT
+=========================== */
+
+
+.contact-card{
+
+    flex-direction:column;
+
+    padding:25px;
+
+}
+
+
+.social-icons{
+
+    justify-content:center;
+
+}
+
+
+
+/* ===========================
+   FOOTER
+=========================== */
+
+
+.modern-footer{
+
+    text-align:center;
+
+    padding:30px 20px;
+
+}
+
+
+}
+
+
+@media(max-width:400px){
+
+.ca-dropdown{
+
+    right:-20px;
+
+    width:270px;
+
+}
+
+
+.ca-profile-btn span{
+
+    display:none;
+
+}
+
+
+.ca-profile-btn{
+
+    padding:10px;
+
+}
+
+}
+
