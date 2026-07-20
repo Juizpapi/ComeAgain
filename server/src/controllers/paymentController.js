@@ -46,7 +46,7 @@ export const initializePayment = async (req, res) => {
         email,
         amount: total * 100,
 
-           callback_url: "http://localhost:5173/checkout",
+           callback_url: "https://come-again.vercel.app/checkout",
  
         metadata: {
           userId: req.user.id,

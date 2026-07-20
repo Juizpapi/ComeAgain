@@ -259,25 +259,184 @@ to{
 
 }
 
+/* ===========================
+   RESPONSIVE MOBILE
+=========================== */
+
+@media(max-width:900px){
+
+    .login-page{
+
+        padding:40px 20px;
+
+    }
+
+    .login-card{
+
+        max-width:100%;
+
+        padding:40px 30px;
+
+        border-radius:24px;
+
+    }
+
+    .login-brand h1{
+
+        font-size:36px;
+
+    }
+
+    .login-heading h2{
+
+        font-size:28px;
+
+    }
+
+}
+
+
 @media(max-width:600px){
 
-.login-card{
+    .login-page{
 
-    padding:35px 25px;
+        padding:20px 15px;
 
-}
+        align-items:flex-start;
 
-.login-brand h1{
+    }
 
-    font-size:34px;
+    .login-card{
 
-}
+        padding:28px 20px;
 
-.login-heading h2{
+        border-radius:18px;
 
-    font-size:24px;
+        margin:10px 0;
 
-}
+    }
+
+    .login-logo{
+
+        width:70px;
+
+    }
+
+    .login-brand{
+
+        margin-bottom:20px;
+
+    }
+
+    .login-brand h1{
+
+        font-size:28px;
+
+        line-height:1.2;
+
+    }
+
+    .login-brand p{
+
+        font-size:14px;
+
+    }
+
+    .login-heading{
+
+        margin-bottom:25px;
+
+    }
+
+    .login-heading h2{
+
+        font-size:22px;
+
+    }
+
+    .login-heading p{
+
+        font-size:14px;
+
+        line-height:1.6;
+
+    }
+
+    .login-message{
+
+        font-size:14px;
+
+        padding:12px;
+
+    }
+
+    .login-form{
+
+        gap:16px;
+
+    }
+
+    .login-form input{
+
+        padding:15px;
+
+        font-size:15px;
+
+    }
+
+    .password-box input{
+
+        padding-right:50px;
+
+    }
+
+    .password-toggle{
+
+        right:15px;
+
+        font-size:17px;
+
+    }
+
+    .login-btn{
+
+        padding:15px;
+
+        font-size:15px;
+
+    }
+
+    .login-footer{
+
+        flex-direction:column;
+
+        gap:12px;
+
+        align-items:center;
+
+        text-align:center;
+
+    }
+
+    .register-text{
+
+        font-size:14px;
+
+        line-height:1.6;
+
+    }
+
+    .resend-verification{
+
+        padding:15px;
+
+    }
+
+    .resend-verification input{
+
+        font-size:15px;
+
+    }
 
 }
 
