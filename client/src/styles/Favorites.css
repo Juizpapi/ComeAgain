@@ -313,36 +313,184 @@ to{
 
 }
 
-/* ===========================
+/* =====================================================
    MOBILE
-=========================== */
+===================================================== */
 
-@media(max-width:900px){
+@media (max-width:768px){
 
-.favorites-topbar{
+    /* PAGE */
 
-    flex-direction:column;
+    .favorites-page{
 
-    text-align:center;
+        padding:15px 10px;
 
-}
+    }
 
-.favorites-nav{
 
-    justify-content:center;
+    /* HEADER */
 
-}
+    .favorites-topbar{
 
-.favorites-card-buttons{
+        flex-direction:column;
 
-    flex-direction:column;
+        align-items:center;
 
-}
+        text-align:center;
 
-.favorites-topbar h1{
+        gap:15px;
 
-    font-size:38px;
+        margin-bottom:25px;
 
-}
+    }
+
+
+    .favorites-topbar h1{
+
+        font-size:28px;
+
+        line-height:1.2;
+
+    }
+
+
+    /* NAVIGATION */
+
+    .favorites-nav{
+
+        width:100%;
+
+        display:flex;
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+
+        gap:10px;
+
+    }
+
+
+    .favorites-nav-btn{
+
+        flex:1;
+
+        min-width:130px;
+
+        padding:12px;
+
+        font-size:14px;
+
+    }
+
+
+    /* GRID */
+
+    .favorites-list{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+    }
+
+
+    /* CARD */
+
+    .favorites-card{
+
+        padding:18px;
+
+        border-radius:18px;
+
+    }
+
+
+    .favorites-card h2{
+
+        font-size:20px;
+
+        margin-bottom:10px;
+
+    }
+
+
+    .favorites-price{
+
+        font-size:20px;
+
+    }
+
+
+    .favorites-category,
+
+    .favorites-recommended{
+
+        font-size:14px;
+
+    }
+
+
+    .favorites-recommended{
+
+        padding:10px 12px;
+
+        margin-bottom:15px;
+
+    }
+
+
+    /* BUTTONS */
+
+    .favorites-card-buttons{
+
+        flex-direction:row;
+
+        gap:10px;
+
+    }
+
+
+    .favorites-cart-btn,
+
+    .favorites-remove-btn{
+
+        flex:1;
+
+        padding:12px 8px;
+
+        font-size:13px;
+
+    }
+
+
+    /* TOAST */
+
+    .favorites-toast{
+
+        left:10px;
+
+        right:10px;
+
+        top:15px;
+
+        width:auto;
+
+        padding:14px;
+
+        font-size:14px;
+
+    }
+
+
+    /* EMPTY MESSAGE */
+
+    .favorites-page > p{
+
+        font-size:18px;
+
+        margin-top:40px;
+
+    }
 
 }
