@@ -286,31 +286,191 @@ to{
 
 }
 
-/* ===========================
+/* =====================================================
    MOBILE
-=========================== */
+===================================================== */
 
-@media(max-width:800px){
+@media (max-width:768px){
 
-.admin-grid{
+    /* PAGE */
 
-    grid-template-columns:1fr;
+    .admin-foods-page{
 
-}
+        padding:15px 10px;
 
-.admin-header{
+    }
 
-    text-align:center;
 
-    justify-content:center;
+    /* HEADER */
 
-}
+    .admin-header{
 
-.admin-actions{
+        flex-direction:column;
 
-    flex-direction:column;
+        justify-content:center;
 
-}
+        align-items:center;
+
+        text-align:center;
+
+        gap:15px;
+
+        margin-bottom:25px;
+
+    }
+
+
+    .admin-title{
+
+        font-size:30px;
+
+    }
+
+
+    .admin-subtitle{
+
+        font-size:14px;
+
+    }
+
+
+    /* FORM */
+
+    .admin-form{
+
+        padding:20px 15px;
+
+        border-radius:18px;
+
+        margin-bottom:25px;
+
+    }
+
+
+    .admin-form h3{
+
+        font-size:20px;
+
+    }
+
+
+    .admin-grid{
+
+        grid-template-columns:1fr;
+
+        gap:15px;
+
+    }
+
+
+    .admin-grid input{
+
+        padding:14px;
+
+        font-size:14px;
+
+    }
+
+
+    /* FORM BUTTONS */
+
+    .admin-actions{
+
+        flex-direction:row;
+
+        gap:10px;
+
+        margin-top:20px;
+
+    }
+
+
+    .admin-actions .admin-btn{
+
+        flex:1;
+
+        padding:12px;
+
+        font-size:14px;
+
+    }
+
+
+    /* FOOD LIST */
+
+    .food-list{
+
+        grid-template-columns:1fr;
+
+        gap:18px;
+
+    }
+
+
+    .food-item-card{
+
+        padding:18px;
+
+        border-radius:18px;
+
+    }
+
+
+    .food-item-card h3{
+
+        font-size:20px;
+
+    }
+
+
+    .food-item-card p{
+
+        font-size:14px;
+
+    }
+
+
+    /* CARD BUTTONS */
+
+    .food-buttons{
+
+        flex-direction:row;
+
+        gap:10px;
+
+        margin-top:15px;
+
+    }
+
+
+    .food-buttons .primary-btn,
+
+    .food-buttons .admin-btn-danger{
+
+        flex:1;
+
+        padding:12px;
+
+        font-size:14px;
+
+    }
+
+
+    /* TOAST */
+
+    .admin-toast{
+
+        left:10px;
+
+        right:10px;
+
+        top:15px;
+
+        width:auto;
+
+        padding:14px;
+
+    }
 
 }
 

@@ -204,7 +204,11 @@ setTimeout(() => {
             <div>
               <p>Price: ₦{Number(food.price || 0).toLocaleString()}</p>
               <div className="food-buttons">
-                <button type="button" className="primary-btn" onClick={() => handleEdit(food)}>Edit</button>
+                <button
+  type="button"
+  className="admin-btn"
+  onClick={() => handleEdit(food)}
+>Edit</button>
                 <button type="button" className="admin-btn-danger" onClick={() => handleDelete(food._id)}>
                 
                 Delete</button>
