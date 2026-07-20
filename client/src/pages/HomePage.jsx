@@ -140,7 +140,7 @@ document.addEventListener("mousedown", closeProfile);
   {user.avatar ? (
 
     <img
-      src={`http://localhost:5000/uploads/${user.avatar}`}
+      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`}
       alt={user.username}
       className="ca-avatar-img"
     />
@@ -173,7 +173,7 @@ document.addEventListener("mousedown", closeProfile);
   {user.avatar ? (
 
     <img
-      src={`http://localhost:5000/uploads/${user.avatar}`}
+      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`}
       alt={user.username}
       className="ca-avatar-img"
     />
