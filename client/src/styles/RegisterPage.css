@@ -275,24 +275,130 @@ to{
    MOBILE
 =========================== */
 
-@media(max-width:600px){
+@media (max-width:768px){
+
+.register-page{
+    padding:30px 16px;
+    align-items:flex-start;
+}
 
 .register-card{
+    padding:35px 28px;
+    border-radius:22px;
+}
 
-    padding:35px 25px;
+.register-brand{
+    margin-bottom:22px;
+}
 
+.register-logo{
+    width:75px;
 }
 
 .register-brand h1{
-
     font-size:34px;
+}
 
+.register-heading{
+    margin-bottom:28px;
 }
 
 .register-heading h2{
+    font-size:28px;
+}
 
-    font-size:24px;
+.register-heading p{
+    font-size:15px;
+}
 
+.register-form{
+    gap:16px;
+}
+
+.register-form input{
+    padding:16px;
+    font-size:16px;
+}
+
+.register-btn{
+    padding:16px;
+}
+
+.register-footer{
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    text-align:center;
+}
+
+.remember-row{
+    align-items:flex-start;
+    gap:10px;
+    font-size:15px;
+    line-height:1.5;
+}
+
+.register-message{
+    font-size:15px;
+    line-height:1.6;
+    word-break:break-word;
+}
+
+}
+
+@media (max-width:480px){
+
+.register-page{
+    padding:20px 12px;
+}
+
+.register-card{
+    padding:25px 18px;
+    border-radius:18px;
+}
+
+.register-logo{
+    width:65px;
+}
+
+.register-brand h1{
+    font-size:28px;
+}
+
+.register-heading h2{
+    font-size:22px;
+}
+
+.register-heading p{
+    font-size:14px;
+}
+
+.register-form input{
+    padding:14px;
+    font-size:15px;
+}
+
+.password-toggle{
+    right:14px;
+    font-size:17px;
+}
+
+.register-btn{
+    font-size:15px;
+    padding:15px;
+}
+
+.remember-row{
+    font-size:14px;
+}
+
+.register-footer a{
+    font-size:15px;
+}
+
+.register-message{
+    padding:12px;
+    font-size:14px;
 }
 
 }
