@@ -368,41 +368,6 @@
 
 
 
-
-/* ===========================
-   responsive rule
-=========================== */
-
-@media(max-width:900px){
-
-.order-hero{
-    display:grid;
-    grid-template-columns:1fr auto;
-    align-items:center;
-    gap:60px;
-
-    background:#f4fbef;
-    border-radius:25px;
-    padding:55px;
-    margin-bottom:40px;
-
-    box-shadow:0 15px 40px rgba(0,0,0,.08);
-}
-
-.order-hero h1{
-
-    white-space:nowrap;
-
-}
-
-.order-header-links{
-
-justify-content:center;
-
-}
-
-}
-
 /* ===========================
    FOOTER
 =========================== */
@@ -467,5 +432,283 @@ margin-bottom:15px;
     color:#555;
 
     font-size:1.2rem;
+
+}
+
+
+/* =====================================================
+   MOBILE ORDER PAGE
+   320px - 768px
+===================================================== */
+
+@media(max-width:768px){
+
+
+/* PAGE */
+
+.order-page{
+
+    padding:10px;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+
+.order-hero{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
+
+    gap:20px;
+
+    padding:25px 15px;
+
+    margin-bottom:25px;
+
+    border-radius:20px;
+
+}
+
+
+
+.order-hero h1,
+.hero-title{
+
+    font-size:26px;
+
+    white-space:normal;
+
+    line-height:1.2;
+
+}
+
+
+.order-hero p,
+.hero-text{
+
+    font-size:14px;
+
+}
+
+
+
+/* =========================
+   NAV BUTTONS
+========================= */
+
+
+.modern-nav{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:row;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:8px;
+
+}
+
+
+.nav-btn{
+
+    padding:10px 12px;
+
+    font-size:13px;
+
+    border-radius:12px;
+
+}
+
+
+
+/* =========================
+   CONTENT
+========================= */
+
+
+.order-content{
+
+    padding:20px 12px;
+
+    border-radius:20px;
+
+}
+
+
+
+/* SEARCH */
+
+
+.modern-search{
+
+    margin-bottom:25px;
+
+}
+
+
+#food-search{
+
+    width:100%;
+
+    max-width:100%;
+
+    padding:14px 18px;
+
+}
+
+
+
+/* HEADING */
+
+
+.order-heading{
+
+    font-size:30px;
+
+    margin:15px 0 30px;
+
+}
+
+
+
+/* =========================
+   FOOD GRID
+========================= */
+
+
+.food-grid{
+
+    grid-template-columns:1fr;
+
+    gap:18px;
+
+}
+
+
+
+/* =========================
+   FOOD CARD
+========================= */
+
+
+.food-card{
+
+    padding:18px;
+
+    border-radius:18px;
+
+}
+
+
+
+.food-card h4{
+
+    font-size:18px;
+
+    padding-right:35px;
+
+}
+
+
+
+.food-card p{
+
+    font-size:14px;
+
+    line-height:1.5;
+
+}
+
+
+
+/* FAVORITE */
+
+
+.favorite-btn{
+
+    width:38px;
+
+    height:38px;
+
+    right:15px;
+
+    top:15px;
+
+    font-size:18px;
+
+}
+
+
+
+/* ADDONS */
+
+
+.addons-box{
+
+    padding:14px;
+
+    border-radius:12px;
+
+}
+
+
+.addon{
+
+    font-size:13px;
+
+}
+
+
+
+/* QUANTITY */
+
+
+.add-to-cart-form input[type="number"]{
+
+    width:70px;
+
+}
+
+
+
+/* BUTTON */
+
+
+.food-card .order-btn{
+
+    padding:12px;
+
+    font-size:14px;
+
+}
+
+
+
+/* FOOTER */
+
+
+.modern-footer{
+
+    margin-top:30px;
+
+    padding:18px;
+
+}
+
+
 
 }
