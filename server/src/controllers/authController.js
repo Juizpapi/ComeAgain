@@ -159,6 +159,7 @@ export const login = async (req, res) => {
   email: user.email,
   role: user.role,
   avatar: user.avatar,
+  address: user.address,
 },
     });
 
@@ -507,6 +508,7 @@ const username =
         email: user.email,
         role: user.role,
         avatar: user.avatar,
+        address: user.address,
       },
     });
 
