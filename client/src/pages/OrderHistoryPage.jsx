@@ -10,7 +10,7 @@ function OrderHistoryPage() {
   useEffect(() => {
     const loadOrders = async () => {
       try {
-        const response = await request("/orders");
+        const response = await request("/orders/my-orders");
 
 setOrders(response);
       } catch (error) {
@@ -71,7 +71,13 @@ My Orders
               <div>
                 <strong>Grand Total:</strong> ₦{Number(order.totalAmount || 0).toLocaleString()}<br />
                 <strong>Status:</strong> <span className={`history-status status-${String(order.status || "").toLowerCase()}`}>{order.status}</span><br />
-                <strong>Payment:</strong> {order.paymentType || 'Not selected'}<br />
+<strong>Payment:</strong>{" "}
+{order.paymentMethod === "COD"
+  ? "Cash on Delivery"
+  : order.paymentMethod === "Online"
+  ? "Online Payment"
+  : "Not selected"}
+<br />
                 <strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Pending'}
               </div>
             </div>
