@@ -10,6 +10,7 @@ const fileInputRef = useRef(null);
 const [form, setForm] = useState({
   username: "",
   email: "",
+  address: "",
 });
 
   useEffect(() => {
@@ -20,9 +21,10 @@ const [form, setForm] = useState({
 
 
 setUser(data.user);
-  setForm({
+setForm({
   username: data.user.username,
   email: data.user.email,
+  address: data.user.address || "",
 });
 
     } catch (error) {
@@ -230,6 +232,33 @@ const handleAvatarUpload = async (event) => {
 
 </div>
 
+<div className="profile-row">
+
+  <span>Delivery Address</span>
+
+  {editing ? (
+
+    <input
+      className="profile-input"
+      type="text"
+      placeholder="Enter your delivery address"
+      value={form.address}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          address: e.target.value,
+        })
+      }
+    />
+
+  ) : (
+
+    <strong>{user?.address || "No address added"}</strong>
+
+  )}
+
+</div>
+
   <div className="profile-row">
     <span>Member Since</span>
     <strong>
@@ -276,9 +305,10 @@ const handleAvatarUpload = async (event) => {
         onClick={() => {
           setEditing(false);
 
-          setForm({
-            username: user.username,
-            email: user.email,
+    setForm({
+      username: user.username,
+      email: user.email,
+      address: user.address || "",
           });
         }}
       >

@@ -386,7 +386,7 @@ export const resetPassword = async (req, res) => {
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {
   try {
-    const { username, email } = req.body;
+    const { username, email, address } = req.body;
 
     const existingUser = await User.findOne({
       _id: { $ne: req.user._id },
@@ -401,8 +401,9 @@ export const updateProfile = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    user.username = username;
-    user.email = email;
+user.username = username;
+user.email = email;
+user.address = address;
 
     await user.save();
 
