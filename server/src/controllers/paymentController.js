@@ -16,13 +16,27 @@ export const initializePayment = async (req, res) => {
     };
 
     const deliveryFees = {
-      agege: 1000,
-      ajeromi: 800,
-      alimosho: 1000,
-      ikeja: 1200,
-      surulere: 1200,
-      yaba: 1300,
-    };
+  agege: 1000,
+  "Ajeromi-Ifelodun": 1000,
+  Alimosho: 1000,
+  "Amuwo-Odofin": 1000,
+  Apapa: 1000,
+  Badagry: 1000,
+  Epe: 1000,
+  "Eti-Osa": 1000,
+  "Ibeju-Lekki": 1000,
+  "Ifako-Ijaiye": 1000,
+  Ikeja: 1000,
+  Ikorodu: 1000,
+  Kosofe: 1000,
+  "Lagos Island": 1000,
+  "Lagos Mainland": 1000,
+  Mushin: 1000,
+  Ojo: 1000,
+  "Oshodi-Isolo": 1000,
+  Somolu: 1000,
+  Surulere: 1000,
+};
 
     const subtotal = items.reduce((sum, item) => {
       const addonsTotal = (item.addons || []).reduce(
