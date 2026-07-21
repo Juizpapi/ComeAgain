@@ -138,11 +138,15 @@ const handleAvatarUpload = async (event) => {
 
   {user?.avatar ? (
 
-    <img
-      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`}
-      alt="Profile"
-      className="profile-avatar-img"
-    />
+<img
+  src={
+    user.avatar.startsWith("http")
+      ? user.avatar
+      : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
+  }
+  alt="Profile"
+  className="profile-avatar-img"
+/>
 
   ) : (
 

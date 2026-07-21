@@ -139,11 +139,15 @@ document.addEventListener("mousedown", closeProfile);
 
   {user.avatar ? (
 
-    <img
-      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`}
-      alt={user.username}
-      className="ca-avatar-img"
-    />
+<img
+  src={
+    user.avatar.startsWith("http")
+      ? user.avatar
+      : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
+  }
+  alt={user.username}
+  className="ca-avatar-img"
+/>
 
   ) : (
 
@@ -172,11 +176,15 @@ document.addEventListener("mousedown", closeProfile);
 
   {user.avatar ? (
 
-    <img
-      src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`}
-      alt={user.username}
-      className="ca-avatar-img"
-    />
+<img
+  src={
+    user.avatar.startsWith("http")
+      ? user.avatar
+      : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
+  }
+  alt={user.username}
+  className="ca-avatar-img"
+/>
 
   ) : (
 
