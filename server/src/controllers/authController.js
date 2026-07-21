@@ -432,7 +432,7 @@ export const uploadAvatar = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    user.avatar = req.file.filename;
+    user.avatar = req.file.path;
 
     await user.save();
 
