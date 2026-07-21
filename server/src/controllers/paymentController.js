@@ -40,6 +40,13 @@ export const initializePayment = async (req, res) => {
 
     const total = subtotal + (deliveryFees[location] || 0);
 
+    console.log("PAYMENT DEBUG");
+console.log("Email:", email);
+console.log("Items:", items);
+console.log("Location:", location);
+console.log("Total:", total);
+console.log("Key exists:", !!process.env.PAYSTACK_SECRET_KEY);
+
     const response = await axios.post(
         "https://api.paystack.co/transaction/initialize",
       {
