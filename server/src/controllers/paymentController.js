@@ -47,6 +47,18 @@ console.log("Location:", location);
 console.log("Total:", total);
 console.log("Key exists:", !!process.env.PAYSTACK_SECRET_KEY);
 
+console.log("PAYSTACK REQUEST BODY:", {
+  email,
+  amount: total * 100,
+  callback_url: "https://come-again.vercel.app/checkout",
+  metadata: {
+    userId: req.user.id,
+    items,
+    location,
+    total,
+  },
+});
+
     const response = await axios.post(
         "https://api.paystack.co/transaction/initialize",
       {
