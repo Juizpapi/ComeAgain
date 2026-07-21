@@ -14,8 +14,27 @@ const addonPrices = {
 
 const deliveryOptions = [
   { value: 'agege', label: 'Agege', fee: 1000 },
-  { value: 'ajeromi', label: 'Ajeromi-Ifelodun', fee: 800 },
+  { value: 'Ajeromi-Ifelodun', label: 'Ajeromi-Ifelodun', fee: 800 },
   { value: 'alimosho', label: 'Alimosho', fee: 1000 },
+  { value: 'Amuwo-Odofin', label: 'Amuwo-Odofin', fee: 1000 },
+  { value: 'Apapa', label: 'Apapa', fee: 800 },
+  { value: 'Badagry', label: 'Badagry', fee: 1000 },
+    { value: 'Epe', label: 'Epe', fee: 1000 },
+  { value: 'Eti-Osa', label: 'Eti-Osa', fee: 1000 },
+    { value: 'Ibeju-Lekki', label: 'Ibeju-Lekki', fee: 1000 },
+  { value: 'Ifako-Ijaiye', label: 'Ifako-Ijaiye', fee: 800 },
+  { value: 'Ikeja', label: 'Ikeja', fee: 1000 },
+    { value: 'Ikorodu', label: 'Ikorodu', fee: 1000 },
+  { value: 'Kosofe', label: 'Kosofe', fee: 800 },
+  { value: 'Lagos Island', label: 'Lagos Island', fee: 1000 },
+    { value: 'Lagos Mainland', label: 'Lagos Mainland', fee: 1000 },
+  { value: 'Mushin', label: 'Mushin', fee: 800 },
+  { value: 'Ojo', label: 'Ojo', fee: 1000 },
+    { value: 'Oshodi-Isolo', label: 'Oshodi-Isolo', fee: 1000 },
+  { value: 'Somolu', label: 'Somolu', fee: 800 },
+   { value: 'Surulere ', label: 'Surulere ', fee: 800 },
+
+
 ];
 
 function readUser() {
@@ -116,6 +135,7 @@ const deliveryAddress = user.address || "";
 
         paymentType,
         location: selectedLocation,
+        deliveryAddress: deliveryAddress,
         items: cart,
         totalAmount: total,
       };
