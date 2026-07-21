@@ -18,11 +18,24 @@ const deliveryOptions = [
   { value: 'alimosho', label: 'Alimosho', fee: 1000 },
 ];
 
+function readUser() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("comeagain_user") || "{}"
+    );
+  } catch {
+    return {};
+  }
+}
+
 function CartPage() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(deliveryOptions[0].value);
   const [message, setMessage] = useState('');
+
+  const user = readUser();
+const deliveryAddress = user.address || "";
 
   const [loaded, setLoaded] = useState(false);
 
@@ -264,6 +277,42 @@ function CartPage() {
             </div>
 
             <div className="cart-summary">
+
+<div className="delivery-address-box">
+
+  <label>
+    Delivery Address
+  </label>
+
+  {deliveryAddress ? (
+    <>
+      <p>
+        {deliveryAddress}
+      </p>
+
+      <Link
+        to="/profile"
+        className="edit-address-btn"
+      >
+        ✏️ Edit Address
+      </Link>
+    </>
+  ) : (
+    <>
+      <p>
+        No address saved.
+      </p>
+
+      <Link
+        to="/profile"
+        className="edit-address-btn"
+      >
+        Add Address
+      </Link>
+    </>
+  )}
+
+</div>
 
               <label htmlFor="location">
                 Select your location
