@@ -68,18 +68,49 @@ My Orders
                   ))}
                 </div>
               </div>
-              <div>
-                <strong>Grand Total:</strong> ₦{Number(order.totalAmount || 0).toLocaleString()}<br />
-                <strong>Status:</strong> <span className={`history-status status-${String(order.status || "").toLowerCase()}`}>{order.status}</span><br />
-<strong>Payment:</strong>{" "}
-{order.paymentMethod === "COD"
-  ? "Cash on Delivery"
-  : order.paymentMethod === "Online"
-  ? "Online Payment"
-  : "Not selected"}
-<br />
-                <strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleString() : 'Pending'}
-              </div>
+<div>
+
+  <strong>Grand Total:</strong> ₦{Number(order.totalAmount || 0).toLocaleString()}
+  <br />
+
+  <strong>Status:</strong>
+
+  <span className={`history-status status-${String(order.status || "").toLowerCase().replace(/\s+/g, "-")}`}>
+    {order.status}
+  </span>
+
+  <br />
+
+  <strong>Payment:</strong>{" "}
+  {order.paymentMethod === "COD"
+    ? "Cash on Delivery"
+    : order.paymentMethod === "Online"
+    ? "Online Payment"
+    : "Not selected"}
+
+  <br />
+
+  <strong>Payment Status:</strong>{" "}
+  {order.paymentStatus}
+
+  <br />
+
+  <strong>Delivery Address:</strong>{" "}
+  {order.deliveryAddress || "Not provided"}
+
+  <br />
+
+  <strong>Phone Number:</strong>{" "}
+  {order.phoneNumber || "Not provided"}
+
+  <br />
+
+  <strong>Date:</strong>{" "}
+  {order.createdAt
+    ? new Date(order.createdAt).toLocaleString()
+    : "Pending"}
+
+</div>
             </div>
           </article>
         ))}

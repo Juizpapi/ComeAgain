@@ -186,7 +186,7 @@
 
 }
 
-.status-processing{
+.status-preparing{
 
     background:#d1ecf1;
 
@@ -194,11 +194,11 @@
 
 }
 
-.status-completed{
+.status-out-for-delivery{
 
-    background:#d4edda;
+    background:#e8d7ff;
 
-    color:#155724;
+    color:#6c2ca8;
 
 }
 
@@ -228,15 +228,15 @@
 
 }
 
-.status-border-processing{
+.status-border-preparing{
 
-    border-left:8px solid #17a2b8;
+    border-left:8px solid #3498db;
 
 }
 
-.status-border-completed{
+.status-border-out-for-delivery{
 
-    border-left:8px solid #28a745;
+    border-left:8px solid #8e44ad;
 
 }
 
