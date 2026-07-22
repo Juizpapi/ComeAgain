@@ -6,6 +6,7 @@ import "../styles/OrderHistory.css";
 function OrderHistoryPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedOrders, setExpandedOrders] = useState([]);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -22,6 +23,14 @@ setOrders(response);
 
     loadOrders();
   }, []);
+
+  const toggleDetails = (id) => {
+  setExpandedOrders((current) =>
+    current.includes(id)
+      ? current.filter((orderId) => orderId !== id)
+      : [...current, id]
+  );
+};
 
   return (
  <div className="history-page">
@@ -53,7 +62,10 @@ My Orders
         {!loading && orders.length === 0 ? <div className="history-empty">You have not placed any orders yet.</div> : null}
 
         {orders.map((order) => (
-          <article key={order._id} className={`history-card status-border-${String(order.status || "").toLowerCase()}`}>
+<article
+  key={order._id}
+  className={`history-card status-border-${String(order.status || "").toLowerCase().replace(/\s+/g, "-")}`}
+>
 
             <h3 className="history-order-title"> Order #{order._id.slice(-6)}</h3>
             <div className="history-details">
@@ -81,34 +93,49 @@ My Orders
 
   <br />
 
-  <strong>Payment:</strong>{" "}
-  {order.paymentMethod === "COD"
-    ? "Cash on Delivery"
-    : order.paymentMethod === "Online"
-    ? "Online Payment"
-    : "Not selected"}
+<strong>Payment:</strong>{" "}
+{order.paymentMethod === "COD"
+  ? "Cash on Delivery"
+  : order.paymentMethod === "Online"
+  ? "Online Payment"
+  : "Not selected"}
 
-  <br />
+<br />
 
-  <strong>Payment Status:</strong>{" "}
-  {order.paymentStatus}
+<button
+  className="details-btn"
+  onClick={() => toggleDetails(order._id)}
+>
+  {expandedOrders.includes(order._id)
+    ? "▲ Less Details"
+    : "▼ More Details"}
+</button>
 
-  <br />
+{expandedOrders.includes(order._id) && (
+  <div className="extra-details">
 
-  <strong>Delivery Address:</strong>{" "}
-  {order.deliveryAddress || "Not provided"}
+    <strong>Payment Status:</strong>{" "}
+    {order.paymentStatus || "Pending"}
 
-  <br />
+    <br />
 
-  <strong>Phone Number:</strong>{" "}
-  {order.phoneNumber || "Not provided"}
+    <strong>Delivery Address:</strong>{" "}
+    {order.deliveryAddress || "Not provided"}
 
-  <br />
+    <br />
 
-  <strong>Date:</strong>{" "}
-  {order.createdAt
-    ? new Date(order.createdAt).toLocaleString()
-    : "Pending"}
+    <strong>Phone Number:</strong>{" "}
+    {order.phoneNumber || "Not provided"}
+
+    <br />
+
+    <strong>Date:</strong>{" "}
+    {order.createdAt
+      ? new Date(order.createdAt).toLocaleString()
+      : "Pending"}
+
+  </div>
+)}
 
 </div>
             </div>
