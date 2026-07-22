@@ -2,19 +2,54 @@ import Order from "../models/Order.js";
 
 export const createOrder = async (req, res) => {
   try {
+
+    const {
+      customer,
+      email,
+      phoneNumber,
+      items,
+      totalAmount,
+      location,
+      deliveryAddress,
+      deliveryFee,
+      paymentType,
+    } = req.body;
+
+
     const order = await Order.create({
-      ...req.body,
+
       user: req.user.id,
+
+      customer,
+      email,
+      phoneNumber,
+
+      items,
+      totalAmount,
+
+      location,
+      deliveryAddress,
+      deliveryFee,
+
+      paymentMethod:
+        paymentType === "cash"
+          ? "COD"
+          : "Online",
+
     });
 
+
     res.status(201).json(order);
+
   } catch (error) {
+
     console.log("CREATE ORDER ERROR:");
     console.log(error);
 
     res.status(400).json({
       message: error.message,
     });
+
   }
 };
 

@@ -127,13 +127,17 @@ setTimeout(() => {
 
       const response = await request('/payments/initialize', {
         method: 'POST',
-        body: JSON.stringify({
-          customer: user.username || 'Guest',
-          email: user.email || 'customer@example.com',
-          paymentType: 'online',
-          location,
-          items: cart,
-        }),
+body: JSON.stringify({
+  customer: user.username || 'Guest',
+  email: user.email || 'customer@example.com',
+  phoneNumber: user.phoneNumber || "",
+  deliveryAddress: user.address || "",
+  paymentType: 'online',
+  location,
+  deliveryFee,
+  items: cart,
+  totalAmount: total,
+}),
       });
 
       if (!response.authorizationUrl) {

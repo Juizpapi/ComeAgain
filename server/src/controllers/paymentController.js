@@ -63,12 +63,17 @@ export const initializePayment = async (req, res) => {
 
            callback_url: "https://come-again.vercel.app/checkout",
  
-        metadata: {
-          userId: req.user.id,
-          items,
-          location,
-          total,
-        },
+metadata: {
+  userId: req.user.id,
+  customer: req.body.customer,
+  email,
+  phoneNumber: req.body.phoneNumber,
+  deliveryAddress: req.body.deliveryAddress,
+  items,
+  location,
+  deliveryFee: deliveryFees[location] || 0,
+  total,
+},
       },
       {
         headers: {
@@ -144,33 +149,40 @@ export const verifyPayment = async (req, res) => {
     const metadata = payment.metadata;
 
 
-    const order = await Order.create({
+const order = await Order.create({
 
-      user: metadata.userId,
+  user: metadata.userId,
 
+  customer: metadata.customer,
 
-      items: metadata.items.map((item) => ({
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        addons: item.addons || [],
-      })),
+  email: metadata.email,
 
+  phoneNumber: metadata.phoneNumber,
 
-      totalAmount: metadata.total,
+  deliveryAddress: metadata.deliveryAddress,
 
-      deliveryFee: 0,
+  location: metadata.location,
 
-      paymentMethod: "Online",
+  items: metadata.items.map((item) => ({
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity,
+    addons: item.addons || [],
+  })),
 
-      paymentStatus: "Paid",
+  totalAmount: metadata.total,
 
-      paymentReference: reference,
+  deliveryFee: metadata.deliveryFee,
 
-      status: "Pending",
+  paymentMethod: "Online",
 
-    });
+  paymentStatus: "Paid",
 
+  paymentReference: reference,
+
+  status: "Pending",
+
+});
 
 
     res.json({

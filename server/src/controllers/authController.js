@@ -160,6 +160,7 @@ export const login = async (req, res) => {
   role: user.role,
   avatar: user.avatar,
   address: user.address,
+  phoneNumber: user.phoneNumber,
 },
     });
 
@@ -387,7 +388,7 @@ export const resetPassword = async (req, res) => {
 // UPDATE PROFILE
 export const updateProfile = async (req, res) => {
   try {
-    const { username, email, address } = req.body;
+    const { username, email, address, phoneNumber } = req.body;
 
     const existingUser = await User.findOne({
       _id: { $ne: req.user._id },
@@ -405,6 +406,7 @@ export const updateProfile = async (req, res) => {
 user.username = username;
 user.email = email;
 user.address = address;
+user.phoneNumber = phoneNumber;
 
     await user.save();
 
@@ -509,6 +511,7 @@ const username =
         role: user.role,
         avatar: user.avatar,
         address: user.address,
+        phoneNumber: user.phoneNumber,
       },
     });
 

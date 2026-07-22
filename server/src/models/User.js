@@ -66,6 +66,11 @@ address: {
   type: String,
   default: "",
 },
+
+phoneNumber: {
+  type: String,
+  default: "",
+},
   },
   {
     timestamps: true,

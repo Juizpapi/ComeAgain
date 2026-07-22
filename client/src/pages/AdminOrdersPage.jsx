@@ -234,9 +234,29 @@ function AdminOrdersPage() {
                 Order #{order._id.slice(-6)}
               </h3>
 
-              <p>
-                Customer: {order.user?.username}
-              </p>
+<p>
+  Customer: {order.customer || order.user?.username}
+</p>
+
+<p>
+  Email: {order.email || order.user?.email}
+</p>
+
+<p>
+  Phone: {order.phoneNumber || "No phone number"}
+</p>
+
+<p>
+  Address: {order.deliveryAddress || "No address"}
+</p>
+
+<p>
+  Location: {order.location || "Not selected"}
+</p>
+
+<p>
+  Payment: {order.paymentMethod}
+</p>
 
               <p>
 

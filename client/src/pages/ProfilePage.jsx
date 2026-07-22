@@ -11,6 +11,7 @@ const [form, setForm] = useState({
   username: "",
   email: "",
   address: "",
+  phoneNumber: "",
 });
 
   useEffect(() => {
@@ -25,6 +26,7 @@ setForm({
   username: data.user.username,
   email: data.user.email,
   address: data.user.address || "",
+  phoneNumber: data.user.phoneNumber || "",
 });
 
     } catch (error) {
@@ -254,6 +256,35 @@ const handleAvatarUpload = async (event) => {
   ) : (
 
     <strong>{user?.address || "No address added"}</strong>
+
+  )}
+
+</div>
+
+<div className="profile-row">
+
+  <span>Phone Number</span>
+
+  {editing ? (
+
+    <input
+      className="profile-input"
+      type="text"
+      placeholder="Enter phone number"
+      value={form.phoneNumber}
+      onChange={(e) =>
+        setForm({
+          ...form,
+          phoneNumber: e.target.value,
+        })
+      }
+    />
+
+  ) : (
+
+    <strong>
+      {user?.phoneNumber || "No phone number added"}
+    </strong>
 
   )}
 

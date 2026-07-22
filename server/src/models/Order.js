@@ -42,6 +42,23 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    customer: {
+  type: String,
+  default: "",
+},
+
+email: {
+  type: String,
+  default: "",
+},
+
+phoneNumber: {
+  type: String,
+  default: "",
+},
+
+
+
     items: {
       type: [orderItemSchema],
       required: true,
@@ -96,10 +113,12 @@ const orderSchema = new mongoose.Schema(
       default: "",
     },
 
-    phoneNumber: {
-      type: String,
-      default: "",
-    },
+    location: {
+  type: String,
+  default: "",
+},
+
+
   },
   {
     timestamps: true,

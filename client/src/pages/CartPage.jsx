@@ -133,6 +133,10 @@ const deliveryAddress = user.address || "";
           ? JSON.parse(localStorage.getItem('comeagain_user')).email
           : 'customer@example.com',
 
+            phoneNumber: localStorage.getItem('comeagain_user')
+    ? JSON.parse(localStorage.getItem('comeagain_user')).phoneNumber || ""
+    : "",
+
         paymentType,
         location: selectedLocation,
         deliveryAddress: deliveryAddress,
