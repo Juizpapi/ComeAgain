@@ -157,13 +157,14 @@ if (Array.isArray(response)) {
   if (existing) {
     existing.quantity += quantity;
   } else {
-    storedCart.push({
-      id: foodId,
-      name: food.name,
-      price: Number(food.price),
-      quantity,
-      addons,
-    });
+storedCart.push({
+  foodId: foodId,
+  id: foodId,
+  name: food.name,
+  price: Number(food.price),
+  quantity,
+  addons,
+});
   }
 
   localStorage.setItem("comeagain_cart", JSON.stringify(storedCart));
