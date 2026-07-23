@@ -158,6 +158,7 @@ if (Array.isArray(response)) {
     existing.quantity += quantity;
   } else {
 storedCart.push({
+  food: foodId,
   foodId: foodId,
   id: foodId,
   name: food.name,

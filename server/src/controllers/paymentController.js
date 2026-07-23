@@ -164,6 +164,7 @@ const order = await Order.create({
   location: metadata.location,
 
   items: metadata.items.map((item) => ({
+    food:item.food,
     name: item.name,
     price: item.price,
     quantity: item.quantity,
