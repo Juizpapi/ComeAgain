@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { request } from "../lib/api";
+
 
 const slides = [
   { src: '/images/african-dish.png', alt: 'nigerian dish' },
@@ -33,6 +35,8 @@ function HomePage() {
 const [slideIndex, setSlideIndex] = useState(0);
 const [cartCount, setCartCount] = useState(getCartCount);
 const [showProfile, setShowProfile] = useState(false);
+const [customerReviews, setCustomerReviews] = useState([]);
+const [homepageReviews, setHomepageReviews] = useState([]);
 const profileRef = useRef(null);
 
 
@@ -76,6 +80,38 @@ document.addEventListener("mousedown", closeProfile);
   const changeSlide = (direction) => {
     setSlideIndex((current) => (current + direction + slides.length) % slides.length);
   };
+
+  request("/reviews")
+  .then((data) => {
+    setCustomerReviews(data);
+  })
+  .catch((error) => {
+    console.error("Failed to load reviews:", error);
+  });
+
+
+  const loadHomepageReviews = async () => {
+
+  try{
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/reviews`
+    );
+
+    const data = await response.json();
+
+    setHomepageReviews(data);
+
+  }catch(error){
+
+    console.log("Review loading error:", error);
+
+  }
+
+};
+
+
+loadHomepageReviews();
 
   return (
     <div className="legacy-page">
@@ -459,43 +495,94 @@ document.addEventListener("mousedown", closeProfile);
 
 <section className="reviews-section">
 
-  <h2>What Our Customers Say</h2>
+<h2>What Our Customers Say</h2>
 
-  <div className="reviews-container">
 
-    <div className="review-card">
-      <div className="stars">★★★★★</div>
+<div className="reviews-container">
 
-      <p>
-        "The Jollof Rice was absolutely delicious! Delivery was very fast
-        and the food arrived hot."
-      </p>
 
-      <h4>- Sarah A.</h4>
-    </div>
+{homepageReviews.length === 0 ? (
 
-    <div className="review-card">
-      <div className="stars">★★★★★</div>
+<p>No customer reviews yet.</p>
 
-      <p>
-        "Best Nigerian restaurant I've ordered from. Fresh meals and
-        excellent customer service."
-      </p>
 
-      <h4>- David O.</h4>
-    </div>
+) : (
 
-    <div className="review-card">
-      <div className="stars">★★★★★</div>
 
-      <p>
-        "Their Egusi Soup is amazing! I'll definitely keep ordering again."
-      </p>
+homepageReviews.map((review)=>(
 
-      <h4>- Chioma E.</h4>
-    </div>
+<div 
+className="review-card"
+key={review._id}
+>
 
-  </div>
+
+{review.user?.avatar ? (
+
+<img
+src={review.user.avatar}
+alt={review.user.username}
+className="customer-review-avatar"
+/>
+
+
+) : (
+
+<div className="customer-review-letter">
+
+{review.user?.username?.charAt(0).toUpperCase()}
+
+</div>
+
+)}
+
+
+
+<div className="stars">
+
+{"⭐".repeat(review.rating)}
+
+</div>
+
+
+<p>
+
+"{review.comment}"
+
+</p>
+
+
+<h4>
+
+- {review.user?.username}
+
+</h4>
+
+
+<p className="review-food-name">
+
+Ordered: {review.food?.name}
+
+</p>
+
+
+<p className="review-date">
+
+{new Date(review.createdAt).toLocaleDateString()}
+
+</p>
+
+
+</div>
+
+
+))
+
+)}
+
+
+</div>
+
 
 </section>
 

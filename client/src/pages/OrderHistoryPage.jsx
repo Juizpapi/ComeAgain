@@ -1,19 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { request } from '../lib/api';
+import ReviewFormModal from "../components/ReviewFormModal";
 import "../styles/OrderHistory.css";
 
 function OrderHistoryPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrders, setExpandedOrders] = useState([]);
+  const [selectedReviewItem, setSelectedReviewItem] = useState(null);
+const [rating, setRating] = useState(5);
+const [comment, setComment] = useState("");
+const [reviewLoading, setReviewLoading] = useState(false);
+const [reviewedItems, setReviewedItems] = useState({});
 
   useEffect(() => {
     const loadOrders = async () => {
       try {
         const response = await request("/orders/my-orders");
 
-setOrders(response);
+   setOrders(response);
+   checkReviews(response);
+
       } catch (error) {
         console.warn(error);
       } finally {
@@ -30,6 +38,87 @@ setOrders(response);
       ? current.filter((orderId) => orderId !== id)
       : [...current, id]
   );
+};
+
+const submitReview = async ({ rating, comment }) => {
+  try {
+
+    setReviewLoading(true);
+
+
+    await request("/reviews", {
+      method: "POST",
+      body: JSON.stringify({
+        food: selectedReviewItem.item.food,
+        order: selectedReviewItem.orderId,
+        rating,
+        comment,
+      }),
+    });
+
+
+alert("Review submitted successfully");
+
+
+setReviewedItems((current) => ({
+  ...current,
+  [`${selectedReviewItem.item.food}-${selectedReviewItem.orderId}`]: true,
+}));
+
+
+setSelectedReviewItem(null);
+
+  } catch (error) {
+
+    alert(
+      error.message || "Failed to submit review"
+    );
+
+  } finally {
+
+    setReviewLoading(false);
+
+  }
+};
+
+
+const checkReviews = async (orders) => {
+  try {
+
+    const checked = {};
+
+
+    for (const order of orders) {
+
+      if (order.status !== "Delivered") continue;
+
+
+      for (const item of order.items || []) {
+
+        const response = await request(
+          `/reviews/check/${item.food}/${order._id}`
+        );
+
+
+        checked[`${item.food}-${order._id}`] =
+          response.reviewed;
+
+      }
+
+    }
+
+
+    setReviewedItems(checked);
+
+
+  } catch (error) {
+
+    console.error(
+      "Failed checking reviews",
+      error
+    );
+
+  }
 };
 
   return (
@@ -71,14 +160,55 @@ My Orders
             <div className="history-details">
               <div>
                 <strong>Items:</strong>
-                <div className="history-items">
-                  {(order.items || []).map((item) => (
-                    <p key={`${order._id}-${item.name}`}>
-                      {item.name} x {item.quantity}
-                      {item.addons?.length ? <small> Addons: {item.addons.join(', ')}</small> : null}
-                    </p>
-                  ))}
-                </div>
+
+<div className="history-items">
+  {(order.items || []).map((item) => (
+    <div
+      key={`${order._id}-${item.food}`}
+      className="history-item-row"
+    >
+
+      <p>
+        {item.name} x {item.quantity}
+
+        {item.addons?.length ? (
+          <small>
+            {" "}Addons: {item.addons.join(', ')}
+          </small>
+        ) : null}
+      </p>
+
+
+{order.status === "Delivered" && (
+  reviewedItems[`${item.food}-${order._id}`] ? (
+
+    <button
+      className="reviewed-btn"
+      disabled
+    >
+      ✅ Reviewed
+    </button>
+
+  ) : (
+
+    <button
+      className="review-food-btn"
+      onClick={() =>
+        setSelectedReviewItem({
+          orderId: order._id,
+          item,
+        })
+      }
+    >
+      ⭐ Review {item.name}
+    </button>
+
+  )
+)}
+
+    </div>
+  ))}
+</div>
               </div>
 <div>
 
@@ -101,6 +231,7 @@ My Orders
   : "Not selected"}
 
 <br />
+
 
 <button
   className="details-btn"
@@ -145,6 +276,13 @@ My Orders
         <Link className="nav-btn" to="/">
     Back Home
 </Link>
+
+<ReviewFormModal
+  item={selectedReviewItem?.item}
+  loading={reviewLoading}
+  onSubmit={submitReview}
+  onClose={() => setSelectedReviewItem(null)}
+/>
       </div>
     </div>
   );

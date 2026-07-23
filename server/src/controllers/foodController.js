@@ -1,15 +1,60 @@
 import Food from "../models/Food.js";
+import Review from "../models/Review.js";
 
 // GET all foods
 export const getFoods = async (req, res) => {
   try {
-    const foods = await Food.find().sort({ category: 1, name: 1 });
+
+    const foods = await Food.aggregate([
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "food",
+          as: "reviews",
+        },
+      },
+
+      {
+        $addFields: {
+          averageRating: {
+            $round: [
+              {
+                $avg: "$reviews.rating",
+              },
+              1,
+            ],
+          },
+
+          totalReviews: {
+            $size: "$reviews",
+          },
+        },
+      },
+
+      {
+        $project: {
+          reviews: 0,
+        },
+      },
+
+      {
+        $sort: {
+          category: 1,
+          name: 1,
+        },
+      },
+    ]);
+
 
     res.json(foods);
+
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 };
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { request } from '../lib/api';
+import ReviewModal from "../components/ReviewModal";
 import "../styles/OrderPage.css";
 
 function getStoredUser() {
@@ -76,6 +77,9 @@ const [favoriteToast, setFavoriteToast] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
   const [quantities, setQuantities] = useState({});
   const [selectedAddons, setSelectedAddons] = useState({});
+  const [selectedReviewFood, setSelectedReviewFood] = useState(null);
+  const [foodReviews, setFoodReviews] = useState([]);
+  const [reviewLoading, setReviewLoading] = useState(false);
   const user = getStoredUser();
 
 const isAdmin =
@@ -176,6 +180,29 @@ storedCart.push({
   window.dispatchEvent(new Event("comeagain-cart-change"));
   setToastVisible(true);
   window.setTimeout(() => setToastVisible(false), 2000);
+};
+
+const openReviews = async (food) => {
+  try {
+
+    setReviewLoading(true);
+
+    const reviews = await request(
+      `/reviews/food/${food._id}`
+    );
+
+    setFoodReviews(reviews);
+    setSelectedReviewFood(food);
+
+  } catch (error) {
+
+    console.error("Failed to load reviews", error);
+
+  } finally {
+
+    setReviewLoading(false);
+
+  }
 };
 
 const toggleFavorite = async (foodId) => {
@@ -352,8 +379,26 @@ console.log("Favorite Toast:", favoriteToast);
   >
     {favorites.includes(food._id) ? "❤️" : "🤍"}
   </button>
-                    <h4>{food.name} - ₦{Number(food.price).toLocaleString()}</h4>
-                    {food.recommended ? <p><strong>Recommended:</strong> {food.recommended}</p> : null}
+<h4>
+  {food.name} - ₦{Number(food.price).toLocaleString()}
+</h4>
+
+<button
+  type="button"
+  className="review-link"
+  onClick={() => openReviews(food)}
+>
+  {food.totalReviews > 0
+    ? `⭐ ${food.averageRating} (${food.totalReviews} review${food.totalReviews > 1 ? "s" : ""})`
+    : "⭐ No reviews yet"
+  }
+</button>
+
+{food.recommended ? (
+  <p>
+    <strong>Recommended:</strong> {food.recommended}
+  </p>
+) : null}
 
                     <div className="add-to-cart-form">
                       <label htmlFor={`quantity-${foodId}`}>Qty:</label>
@@ -408,6 +453,14 @@ console.log("Favorite Toast:", favoriteToast);
     {favoriteToast}
   </div>
 )}
+
+<ReviewModal
+  food={selectedReviewFood}
+  reviews={foodReviews}
+  loading={reviewLoading}
+  onClose={() => setSelectedReviewFood(null)}
+/>
+
     </div>
   );
 }
