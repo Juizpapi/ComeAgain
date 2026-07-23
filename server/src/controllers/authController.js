@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import admin from "../config/firebaseAdmin.js";
 import User from "../models/User.js";
 
 
@@ -456,72 +455,4 @@ export const uploadAvatar = async (req, res) => {
   }
 };
 
-// GOOGLE LOGIN
-export const googleLogin = async (req, res) => {
-  try {
 
-    const { idToken } = req.body;
-
-    if (!idToken) {
-      return res.status(400).json({
-        message: "Google token is required.",
-      });
-    }
-
-const decodedToken = await admin.verifyIdToken(idToken);
-
-const email = decodedToken.email;
-
-const username =
-  decodedToken.name || email.split("@")[0];
-
-    let user = await User.findOne({ email });
-
-    if (!user) {
-
-      user = await User.create({
-        username,
-        email,
-        password: crypto.randomBytes(32).toString("hex"),
-        role: "user",
-        is_confirmed: true,
-      });
-
-    }
-
-    const token = jwt.sign(
-      {
-        id: user._id,
-        username: user.username,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      }
-    );
-
-    res.json({
-      message: "Google login successful.",
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        address: user.address,
-        phoneNumber: user.phoneNumber,
-      },
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-      message: "Google login failed.",
-    });
-
-  }
-};
