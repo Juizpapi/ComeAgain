@@ -39,10 +39,7 @@ const reviewSchema = new mongoose.Schema(
       default: true,
     },
 
-    reviewedAt: {
-  type: Date,
-  default: Date.now,
-},
+
   },
   {
     timestamps: true,

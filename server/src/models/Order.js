@@ -108,6 +108,11 @@ phoneNumber: {
       ],
       default: "Pending",
     },
+    
+    deliveredAt: {
+  type: Date,
+  default: null,
+},
 
     customerNote: {
       type: String,

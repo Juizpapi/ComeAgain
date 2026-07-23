@@ -89,13 +89,18 @@ export const updateOrderStatus = async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(
       req.params.id,
-      {
-        status: req.body.status,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
+
+ {
+  status: req.body.status,
+
+  ...(req.body.status === "Delivered" && {
+    deliveredAt: new Date(),
+  }),
+},
+{
+  new: true,
+  runValidators: true,
+}
     );
 
     if (!order) {
