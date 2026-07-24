@@ -75,13 +75,21 @@ setSelectedReviewItem(null);
 
   } catch (error) {
 
+catch (error) {
+
+console.log("REVIEW ERROR:", error);
+
 setReviewToast(
-  error.message || "Failed to submit review"
+  error?.message ||
+  error?.response?.data?.message ||
+  "Failed to submit review"
 );
 
 setTimeout(() => {
   setReviewToast("");
 }, 3000);
+
+}
 
   } finally {
 
@@ -120,8 +128,6 @@ for (const item of order.items || []) {
 
 
     setReviewedItems(checked);
-
-    console.log("CHECKED REVIEWS:", checked);
 
 
   } catch (error) {
@@ -196,7 +202,7 @@ My Orders
   reviewedItems[`${item.food}-${order._id}`] ? (
 
     <button
-      className="order-btn"
+      className="reviewed-btn"
       disabled
     >
       ✅ Reviewed

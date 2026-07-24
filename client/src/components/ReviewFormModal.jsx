@@ -76,6 +76,7 @@ function ReviewFormModal({
 
 
         <button
+        type="button"
           className="submit-review-btn"
           onClick={handleSubmit}
           disabled={loading}
