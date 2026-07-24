@@ -183,7 +183,7 @@ My Orders
   reviewedItems[`${item.food}-${order._id}`] ? (
 
     <button
-      className="reviewed-btn"
+      className="order-btn"
       disabled
     >
       ✅ Reviewed
@@ -192,7 +192,7 @@ My Orders
   ) : (
 
     <button
-      className="review-food-btn"
+      className="order-btn"
       onClick={() =>
         setSelectedReviewItem({
           orderId: order._id,

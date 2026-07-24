@@ -708,21 +708,36 @@
 
 }
 
-.review-food-btn{
-    margin-top:10px;
-    background:#ff5722;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:30px;
-    font-weight:600;
+.order-btn{
+    width:100%;
+    margin-top:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:#fff;
+    color:#444;
+
+    border:1px solid #eee;
+    border-radius:14px;
+
+    padding:14px;
+
+    font-size:16px;
+    font-weight:700;
+
     cursor:pointer;
-    transition:.25s;
+
+    transition:.3s;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
 }
 
-.review-food-btn:hover{
-    background:#e64a19;
-    transform:translateY(-2px);
+.order-btn:hover{
+    color:#ff5722;
+    border-color:#ff5722;
+    transform:translateY(-4px);
 }
 
 .reviewed-btn{
