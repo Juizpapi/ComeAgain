@@ -77,17 +77,21 @@ document.addEventListener("mousedown", closeProfile);
 );
   }, []);
 
+  useEffect(() => {
+  request("/reviews")
+    .then((data) => {
+      setCustomerReviews(data);
+    })
+    .catch((error) => {
+      console.error("Failed to load reviews:", error);
+    });
+}, []);
+
   const changeSlide = (direction) => {
     setSlideIndex((current) => (current + direction + slides.length) % slides.length);
   };
 
-  request("/reviews")
-  .then((data) => {
-    setCustomerReviews(data);
-  })
-  .catch((error) => {
-    console.error("Failed to load reviews:", error);
-  });
+
 
 
   const loadHomepageReviews = async () => {
@@ -111,7 +115,9 @@ document.addEventListener("mousedown", closeProfile);
 };
 
 
-loadHomepageReviews();
+useEffect(() => {
+  loadHomepageReviews();
+}, []);
 
   return (
     <div className="legacy-page">
