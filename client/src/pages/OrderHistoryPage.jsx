@@ -102,17 +102,19 @@ const checkReviews = async (orders) => {
       if (order.status !== "Delivered") continue;
 
 
-      for (const item of order.items || []) {
+for (const item of order.items || []) {
 
-        const response = await request(
-          `/reviews/check/${item.food}/${order._id}`
-        );
+  if (!item.food) continue;
+
+  const response = await request(
+    `/reviews/check/${item.food}/${order._id}`
+  );
 
 
-        checked[`${item.food}-${order._id}`] =
-          response.reviewed;
+  checked[`${item.food}-${order._id}`] =
+    response.reviewed;
 
-      }
+}
 
     }
 
