@@ -709,29 +709,15 @@
 }
 
 .order-btn{
-    width:100%;
-    margin-top:18px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
+margin-top:10px;
     background:#fff;
     color:#444;
-
     border:1px solid #eee;
-    border-radius:14px;
-
-    padding:14px;
-
-    font-size:16px;
-    font-weight:700;
-
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:600;
     cursor:pointer;
-
-    transition:.3s;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    transition:.25s;
 }
 
 .order-btn:hover{
