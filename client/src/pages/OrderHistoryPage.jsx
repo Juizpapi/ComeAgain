@@ -13,6 +13,7 @@ const [rating, setRating] = useState(5);
 const [comment, setComment] = useState("");
 const [reviewLoading, setReviewLoading] = useState(false);
 const [reviewedItems, setReviewedItems] = useState({});
+const [reviewToast, setReviewToast] = useState("");
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -57,7 +58,11 @@ const submitReview = async ({ rating, comment }) => {
     });
 
 
-alert("Review submitted successfully");
+setReviewToast("Review submitted successfully ⭐");
+
+setTimeout(() => {
+  setReviewToast("");
+}, 3000);
 
 
 setReviewedItems((current) => ({
@@ -70,9 +75,13 @@ setSelectedReviewItem(null);
 
   } catch (error) {
 
-    alert(
-      error.message || "Failed to submit review"
-    );
+setReviewToast(
+  error.message || "Failed to submit review"
+);
+
+setTimeout(() => {
+  setReviewToast("");
+}, 3000);
 
   } finally {
 
@@ -109,6 +118,8 @@ const checkReviews = async (orders) => {
 
 
     setReviewedItems(checked);
+
+    console.log("CHECKED REVIEWS:", checked);
 
 
   } catch (error) {
@@ -283,7 +294,15 @@ My Orders
   onSubmit={submitReview}
   onClose={() => setSelectedReviewItem(null)}
 />
+
+{reviewToast && (
+  <div className="review-toast">
+    {reviewToast}
+  </div>
+)}
       </div>
+
+
     </div>
   );
 }
