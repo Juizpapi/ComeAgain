@@ -385,7 +385,7 @@ console.log("Favorite Toast:", favoriteToast);
 
 <button
   type="button"
-  className="review-link"
+  className="review-food-btn"
   onClick={() => openReviews(food)}
 >
   {food.totalReviews > 0

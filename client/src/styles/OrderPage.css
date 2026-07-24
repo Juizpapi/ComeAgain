@@ -712,3 +712,25 @@ margin-bottom:15px;
 
 
 }
+
+
+/* =========================
+   FOOD CARD
+========================= */
+
+.review-food-btn{
+    margin-top:10px;
+    background:#ff5722;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.review-food-btn:hover{
+    background:#e64a19;
+    transform:translateY(-2px);
+}
