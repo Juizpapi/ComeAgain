@@ -73,29 +73,22 @@ setReviewedItems((current) => ({
 
 setSelectedReviewItem(null);
 
-  } catch (error) {
+ } catch (error) {
+  console.log("REVIEW ERROR:", error);
 
-catch (error) {
+  setReviewToast(
+    error?.message ||
+    error?.response?.data?.message ||
+    "Failed to submit review"
+  );
 
-console.log("REVIEW ERROR:", error);
+  setTimeout(() => {
+    setReviewToast("");
+  }, 3000);
 
-setReviewToast(
-  error?.message ||
-  error?.response?.data?.message ||
-  "Failed to submit review"
-);
-
-setTimeout(() => {
-  setReviewToast("");
-}, 3000);
-
+} finally {
+  setReviewLoading(false);
 }
-
-  } finally {
-
-    setReviewLoading(false);
-
-  }
 };
 
 
