@@ -68,13 +68,15 @@ function FavoritesPage() {
 
     } else {
 
-      cart.push({
-        id: food._id,
-        name: food.name,
-        price: Number(food.price),
-        quantity: 1,
-        addons: [],
-      });
+cart.push({
+  food: food._id,
+  foodId: food._id,
+  id: food._id,
+  name: food.name,
+  price: Number(food.price),
+  quantity: 1,
+  addons: [],
+});
 
     }
 
