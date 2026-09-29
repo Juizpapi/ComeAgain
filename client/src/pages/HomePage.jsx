@@ -35,7 +35,6 @@ function HomePage() {
 const [slideIndex, setSlideIndex] = useState(0);
 const [cartCount, setCartCount] = useState(getCartCount);
 const [showProfile, setShowProfile] = useState(false);
-const [customerReviews, setCustomerReviews] = useState([]);
 const [homepageReviews, setHomepageReviews] = useState([]);
 const profileRef = useRef(null);
 
@@ -77,15 +76,7 @@ document.addEventListener("mousedown", closeProfile);
 );
   }, []);
 
-  useEffect(() => {
-  request("/reviews")
-    .then((data) => {
-      setCustomerReviews(data);
-    })
-    .catch((error) => {
-      console.error("Failed to load reviews:", error);
-    });
-}, []);
+
 
   const changeSlide = (direction) => {
     setSlideIndex((current) => (current + direction + slides.length) % slides.length);
@@ -94,24 +85,30 @@ document.addEventListener("mousedown", closeProfile);
 
 
 
-  const loadHomepageReviews = async () => {
-
-  try{
-
+const loadHomepageReviews = async () => {
+  try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/reviews`
     );
-
     const data = await response.json();
 
-    setHomepageReviews(data);
+    if (Array.isArray(data)) {
+      const topReviews = [...data]
+        .sort((a, b) => {
+          // Sort highest rating first (5 stars to 1 star)
+          if (b.rating !== a.rating) {
+            return b.rating - a.rating;
+          }
+          // If ratings are equal, show the newest first
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        })
+        .slice(0, 4); // Take only the best 4
 
-  }catch(error){
-
+      setHomepageReviews(topReviews);
+    }
+  } catch (error) {
     console.log("Review loading error:", error);
-
   }
-
 };
 
 
