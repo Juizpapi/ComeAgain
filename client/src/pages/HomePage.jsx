@@ -79,9 +79,6 @@ document.addEventListener("mousedown", closeProfile);
 
 
 
-  const changeSlide = (direction) => {
-    setSlideIndex((current) => (current + direction + slides.length) % slides.length);
-  };
 
 
 
