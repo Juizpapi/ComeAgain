@@ -36,6 +36,7 @@ const [slideIndex, setSlideIndex] = useState(0);
 const [cartCount, setCartCount] = useState(getCartCount);
 const [showProfile, setShowProfile] = useState(false);
 const [homepageReviews, setHomepageReviews] = useState([]);
+const [loadingReviews, setLoadingReviews] = useState(true);
 const profileRef = useRef(null);
 
 
@@ -95,19 +96,19 @@ const loadHomepageReviews = async () => {
     if (Array.isArray(data)) {
       const topReviews = [...data]
         .sort((a, b) => {
-          // Sort highest rating first (5 stars to 1 star)
           if (b.rating !== a.rating) {
             return b.rating - a.rating;
           }
-          // If ratings are equal, show the newest first
           return new Date(b.createdAt) - new Date(a.createdAt);
         })
-        .slice(0, 4); // Take only the best 4
+        .slice(0, 4);
 
       setHomepageReviews(topReviews);
     }
   } catch (error) {
     console.log("Review loading error:", error);
+  } finally {
+    setLoadingReviews(false);
   }
 };
 
@@ -522,10 +523,13 @@ useEffect(() => {
 <div className="reviews-container">
 
 
-{homepageReviews.length === 0 ? (
+{loadingReviews ? (
+
+<p>Loading customer reviews...</p>
+
+) : homepageReviews.length === 0 ? (
 
 <p>No customer reviews yet.</p>
-
 
 ) : (
 
