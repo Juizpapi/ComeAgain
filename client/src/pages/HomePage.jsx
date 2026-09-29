@@ -371,13 +371,31 @@ useEffect(() => {
 
     </div>
 
-    <div className="hero-image">
-
+<div className="hero-image">
       <img
-        src="/images/african-dish.png"
-        alt="Come Again Restaurant"
+        src={slides[slideIndex].src}
+        alt={slides[slideIndex].alt}
       />
 
+      {/* Interactive Dots */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setSlideIndex(index)}
+            aria-label={`Slide ${index + 1}`}
+            style={{
+              width: '12px',
+              height: '12px',
+              borderRadius: '50%',
+              border: 'none',
+              backgroundColor: slideIndex === index ? '#e65100' : '#ccc',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s ease'
+            }}
+          />
+        ))}
+      </div>
     </div>
 
   </div>
