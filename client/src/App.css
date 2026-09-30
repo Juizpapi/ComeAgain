@@ -3054,4 +3054,27 @@ font-size:34px;
     scroll-snap-align: center;
     box-sizing: border-box !important;
   }
+
+  /* Commit #6: Horizontal Swipe for Popular Dishes */
+  .food-gallery {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Forces items onto a single horizontal line */
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px !important;
+    padding: 10px 16px 20px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .food-item {
+    flex: 0 0 80% !important; /* Keeps dish cards wide while leaving a peek of the next card */
+    min-width: 80% !important;
+    max-width: 80% !important;
+    scroll-snap-align: center;
+    box-sizing: border-box !important;
+  }
   }
