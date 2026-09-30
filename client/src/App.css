@@ -3031,4 +3031,27 @@ font-size:34px;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
   }
+
+/* Commit #5: Horizontal Swipe for Customer Reviews */
+  .reviews-container {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Prevents cards from wrapping onto new lines */
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 16px !important;
+    padding: 10px 16px 20px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .review-card {
+    flex: 0 0 85% !important; /* Prevents cards from shrinking */
+    min-width: 85% !important;
+    max-width: 85% !important;
+    scroll-snap-align: center;
+    box-sizing: border-box !important;
+  }
   }
