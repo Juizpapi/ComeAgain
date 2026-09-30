@@ -12,8 +12,6 @@ function getStoredUser() {
   }
 }
 
-
-
 const addonPrices = {
   Plantain: 200,
   Salad: 150,
@@ -70,11 +68,10 @@ function OrderPage() {
   const [loading, setLoading] = useState(true);
 
   const [favorites, setFavorites] = useState([]);
-const [favoriteLoading, setFavoriteLoading] = useState(false);
-const [favoriteToast, setFavoriteToast] = useState("");
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [toast, setToast] = useState("");
   const [searchTerm, setSearchTerm] = useState('');
   const [cartCount, setCartCount] = useState(() => getCartCount(getStoredCart()));
-  const [toastVisible, setToastVisible] = useState(false);
   const [quantities, setQuantities] = useState({});
   const [selectedAddons, setSelectedAddons] = useState({});
   const [selectedReviewFood, setSelectedReviewFood] = useState(null);
@@ -82,18 +79,15 @@ const [favoriteToast, setFavoriteToast] = useState("");
   const [reviewLoading, setReviewLoading] = useState(false);
   const user = getStoredUser();
 
-const isAdmin =
-  user?.role === "admin" ||
-  user?.username === "admin";
+  const isAdmin = user?.role === "admin" || user?.username === "admin";
 
   useEffect(() => {
     const loadMenu = async () => {
       try {
         const response = await request("/foods");
-
-if (Array.isArray(response)) {
-  setMenuItems(response);
-}
+        if (Array.isArray(response)) {
+          setMenuItems(response);
+        }
       } catch (error) {
         console.warn('Using local menu because the API menu did not load.', error);
       } finally {
@@ -103,23 +97,19 @@ if (Array.isArray(response)) {
 
     loadMenu();
 
-   if (user) {
-  request("/favorites")
-    .then((data) => {
-      setFavorites(
-        data.map((favorite) => favorite.food._id)
-      );
-    })
-    .catch(console.error);
-}
-
+    if (user) {
+      request("/favorites")
+        .then((data) => {
+          setFavorites(data.map((favorite) => favorite.food._id || favorite.food.id));
+        })
+        .catch(console.error);
+    }
   }, []);
 
   const filteredGroups = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
     const filteredItems = query
       ? menuItems.filter((item) => {
-        console.log("Favorite Toast:", favoriteToast);
           return (
             item.name.toLowerCase().includes(query) ||
             item.category.toLowerCase().includes(query) ||
@@ -143,199 +133,137 @@ if (Array.isArray(response)) {
   };
 
   const addToCart = (food) => {
-   
+    const foodId = food._id || food.id;
+    const quantity = Number(quantities[foodId] || 1);
+    const addons = selectedAddons[foodId] || [];
+    const storedCart = getStoredCart();
 
-  const foodId = food._id || food.id;
-
-  const quantity = Number(quantities[foodId] || 1);
-  const addons = selectedAddons[foodId] || [];
-
-  const storedCart = getStoredCart();
-
-  const existing = storedCart.find(
-    (entry) =>
-      entry.id === foodId &&
-      JSON.stringify(entry.addons || []) === JSON.stringify(addons)
-  );
-
-  if (existing) {
-    existing.quantity += quantity;
-  } else {
-storedCart.push({
-  food: foodId,
-  foodId: foodId,
-  id: foodId,
-  name: food.name,
-  price: Number(food.price),
-  quantity,
-  addons,
-});
-  }
-
-  localStorage.setItem("comeagain_cart", JSON.stringify(storedCart));
-
-  
-
-  setCartCount(getCartCount(storedCart));
-  window.dispatchEvent(new Event("comeagain-cart-change"));
-  setToastVisible(true);
-  window.setTimeout(() => setToastVisible(false), 2000);
-};
-
-const openReviews = async (food) => {
-  try {
-
-    setReviewLoading(true);
-
-    const reviews = await request(
-      `/reviews/food/${food._id}`
+    const existing = storedCart.find(
+      (entry) =>
+        entry.id === foodId &&
+        JSON.stringify(entry.addons || []) === JSON.stringify(addons)
     );
 
-    setFoodReviews(reviews);
-    setSelectedReviewFood(food);
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      storedCart.push({
+        food: foodId,
+        foodId: foodId,
+        id: foodId,
+        name: food.name,
+        price: Number(food.price),
+        quantity,
+        addons,
+      });
+    }
 
-  } catch (error) {
+    localStorage.setItem("comeagain_cart", JSON.stringify(storedCart));
+    setCartCount(getCartCount(storedCart));
+    window.dispatchEvent(new Event("comeagain-cart-change"));
 
-    console.error("Failed to load reviews", error);
+    setToast("🛒 Added to Cart!");
+    setTimeout(() => setToast(""), 2000);
+  };
 
-  } finally {
+  const openReviews = async (food) => {
+    try {
+      setReviewLoading(true);
+      const reviews = await request(`/reviews/food/${food._id || food.id}`);
+      setFoodReviews(reviews);
+      setSelectedReviewFood(food);
+    } catch (error) {
+      console.error("Failed to load reviews", error);
+    } finally {
+      setReviewLoading(false);
+    }
+  };
 
-    setReviewLoading(false);
+  const toggleFavorite = async (food) => {
+    if (!user) {
+      setToast("⚠️ Please log in to add favorites");
+      setTimeout(() => setToast(""), 2000);
+      return;
+    }
 
-  }
-};
+    const foodId = food._id || food.id;
 
-const toggleFavorite = async (foodId) => {
-  try {
+    try {
+      setFavoriteLoading(true);
 
-    setFavoriteLoading(true);
+      const data = await request(`/favorites/${foodId}`, {
+        method: "POST",
+      });
 
-    const data = await request(`/favorites/${foodId}`, {
-      method: "POST",
-    });
-    
+      if (data.favorited) {
+        setFavorites((prev) => [...new Set([...prev, foodId])]);
+        setToast("❤️ Added to Favorites");
+      } else {
+        setFavorites((prev) => prev.filter((id) => id !== foodId));
+        setToast("🤍 Removed from Favorites");
+      }
 
-if (data.favorited) {
+      setTimeout(() => setToast(""), 2000);
+    } catch (err) {
+      console.error(err);
+      setToast("❌ Failed to update favorite");
+      setTimeout(() => setToast(""), 2000);
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
 
-  setFavorites((prev) =>
-    [...new Set([...prev, foodId])]
-  );
-
-  setFavoriteToast("❤️ Added to Favorites");
-
-} else {
-
-  setFavorites((prev) =>
-    prev.filter((id) => id !== foodId)
-  );
-
-  setFavoriteToast("🤍 Removed from Favorites");
-
-}
-
-setTimeout(() => {
-  setFavoriteToast("");
-}, 2000);
-
-  } catch (err) {
-
-    console.error(err);
-
-  } finally {
-
-    setFavoriteLoading(false);
-
-  }
-};
-console.log("Favorite Toast:", favoriteToast);
   return (
     <div className="page-shell order-page">
-<header className="order-hero">
-
-    <div className="order-brand">
-
-        <h1 className="hero-title">
-            COME AGAIN RESTAURANT
-        </h1>
-
-        <p className="hero-text">
+      <header className="order-hero">
+        <div className="order-brand">
+          <h1 className="hero-title">COME AGAIN RESTAURANT</h1>
+          <p className="hero-text">
             Our food is sensational...
             <strong> COME~AGAIN </strong>
             soon!
-        </p>
+          </p>
+        </div>
 
-    </div>
-
-    <nav className="modern-nav">
-
-              <Link to="/" className="nav-btn">
-            🏠 Home
-        </Link>
-
-        <Link to="/cart" className="nav-btn">
+        <nav className="modern-nav">
+          <Link to="/" className="nav-btn">🏠 Home</Link>
+          <Link to="/cart" className="nav-btn">
             🛒 Cart
-            <span className="nav-badge">
-                {cartCount}
-            </span>
-        </Link>
+            <span className="nav-badge">{cartCount}</span>
+          </Link>
+          <Link to="/favorites" className="nav-btn">❤️ Favorites</Link>
 
-        <Link to="/favorites" className="nav-btn">
-            ❤️ Favorites
-        </Link>
+          {user && (
+            <Link to="/order-history" className="nav-btn">📦 Orders</Link>
+          )}
 
-
-
-        {user && (
-            <Link to="/order-history" className="nav-btn">
-                📦 Orders
-            </Link>
-        )}
-
-        {isAdmin && (
+          {isAdmin && (
             <>
-                <Link
-                    to="/admin/orders"
-                    className="nav-btn"
-                >
-                    📋 Admin Orders
-                </Link>
-
-                <Link
-                    to="/admin/foods"
-                    className="nav-btn"
-                >
-                    🍽 Admin Foods
-                </Link>
+              <Link to="/admin/orders" className="nav-btn">📋 Admin Orders</Link>
+              <Link to="/admin/foods" className="nav-btn">🍽 Admin Foods</Link>
             </>
-        )}
+          )}
 
-        {!user ? (
+          {!user ? (
             <>
-                <Link to="/login" className="nav-btn">
-                    Login
-                </Link>
-
-                <Link to="/register" className="nav-btn">
-                    Register
-                </Link>
+              <Link to="/login" className="nav-btn">Login</Link>
+              <Link to="/register" className="nav-btn">Register</Link>
             </>
-        ) : (
+          ) : (
             <button
-                className="nav-btn logout-btn"
-                onClick={()=>{
-                    localStorage.removeItem("comeagain_user");
-                    localStorage.removeItem("comeagain_token");
-                    localStorage.removeItem("comeagain_cart");
-                    window.location.href="/";
-                }}
+              className="nav-btn logout-btn"
+              onClick={() => {
+                localStorage.removeItem("comeagain_user");
+                localStorage.removeItem("comeagain_token");
+                localStorage.removeItem("comeagain_cart");
+                window.location.href = "/";
+              }}
             >
-                Logout
+              Logout
             </button>
-        )}
-
-    </nav>
-
-</header>
+          )}
+        </nav>
+      </header>
 
       <section className="order-content">
         <div className="food-search-wrap modern-search">
@@ -348,9 +276,7 @@ console.log("Favorite Toast:", favoriteToast);
           />
         </div>
 
-        <h2 className="order-heading">
-    Order Now
-</h2>
+        <h2 className="order-heading">Order Now</h2>
         {loading ? <p style={{ textAlign: 'center' }}>Loading menu...</p> : null}
 
         {filteredGroups.length === 0 ? (
@@ -362,43 +288,38 @@ console.log("Favorite Toast:", favoriteToast);
             <h3 className="order-category-title">{category}</h3>
             <div className="food-grid">
               {items.map((food) => {
-                const foodId = food._id || food.Id ;
+                const foodId = food._id || food.id;
                 const quantity = quantities[foodId] || 1;
                 const canUseAddons = ['Rice', 'Swallow'].includes(food.category);
-                
+
                 return (
-                  <article
-  key={food._id || food.id}
-  className="food-card"
->
+                  <article key={foodId} className="food-card">
+                    <button
+                      className="favorite-btn"
+                      onClick={() => toggleFavorite(food)}
+                      disabled={favoriteLoading}
+                    >
+                      {favorites.includes(foodId) ? "❤️" : "🤍"}
+                    </button>
+                    <h4>
+                      {food.name} - ₦{Number(food.price).toLocaleString()}
+                    </h4>
 
-  <button
-    className="favorite-btn"
-    onClick={() => toggleFavorite(food._id)}
-    disabled={favoriteLoading}
-  >
-    {favorites.includes(food._id) ? "❤️" : "🤍"}
-  </button>
-<h4>
-  {food.name} - ₦{Number(food.price).toLocaleString()}
-</h4>
+                    <button
+                      type="button"
+                      className="order-btn"
+                      onClick={() => openReviews(food)}
+                    >
+                      {food.totalReviews > 0
+                        ? `⭐ ${food.averageRating} (${food.totalReviews} review${food.totalReviews > 1 ? "s" : ""})`
+                        : "⭐ No reviews yet"}
+                    </button>
 
-<button
-  type="button"
-  className="order-btn"
-  onClick={() => openReviews(food)}
->
-  {food.totalReviews > 0
-    ? `⭐ ${food.averageRating} (${food.totalReviews} review${food.totalReviews > 1 ? "s" : ""})`
-    : "⭐ No reviews yet"
-  }
-</button>
-
-{food.recommended ? (
-  <p>
-    <strong>Recommended:</strong> {food.recommended}
-  </p>
-) : null}
+                    {food.recommended ? (
+                      <p>
+                        <strong>Recommended:</strong> {food.recommended}
+                      </p>
+                    ) : null}
 
                     <div className="add-to-cart-form">
                       <label htmlFor={`quantity-${foodId}`}>Qty:</label>
@@ -410,10 +331,9 @@ console.log("Favorite Toast:", favoriteToast);
                         onChange={(event) => {
                           const nextValue = Math.max(1, Number(event.target.value || 1));
                           setQuantities((current) => ({
-  ...current,
-  [foodId]: nextValue,
-}));
-
+                            ...current,
+                            [foodId]: nextValue,
+                          }));
                         }}
                       />
 
@@ -434,7 +354,6 @@ console.log("Favorite Toast:", favoriteToast);
                       ) : null}
 
                       <button type="button" className="order-btn" onClick={() => addToCart(food)}>
-                      
                         Add to Cart
                       </button>
                     </div>
@@ -447,20 +366,19 @@ console.log("Favorite Toast:", favoriteToast);
       </section>
 
       <footer className="modern-footer">© 2026 Come Again Restaurant</footer>
-      <div id="cart-toast" className={toastVisible ? 'show' : ''}>Added to cart</div>
-      {favoriteToast && (
-  <div className="favorite-toast show">
-    {favoriteToast}
-  </div>
-)}
 
-<ReviewModal
-  food={selectedReviewFood}
-  reviews={foodReviews}
-  loading={reviewLoading}
-  onClose={() => setSelectedReviewFood(null)}
-/>
+      {toast && (
+        <div className="favorites-toast">
+          {toast}
+        </div>
+      )}
 
+      <ReviewModal
+        food={selectedReviewFood}
+        reviews={foodReviews}
+        loading={reviewLoading}
+        onClose={() => setSelectedReviewFood(null)}
+      />
     </div>
   );
 }
