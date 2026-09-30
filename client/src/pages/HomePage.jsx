@@ -40,6 +40,19 @@ const [loadingReviews, setLoadingReviews] = useState(true);
 const profileRef = useRef(null);
 
 
+useEffect(() => {
+  if (showProfile) {
+    const timer = setTimeout(() => {
+      const dropdown = document.querySelector(".ca-dropdown");
+      if (dropdown) {
+        dropdown.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }
+}, [showProfile]);
+
   const user = getStoredUser();
   const isAdmin = user?.role === 'admin' || user?.username === 'admin';
 

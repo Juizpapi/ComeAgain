@@ -3020,3 +3020,15 @@ font-size:34px;
 
 }
 
+/* ==========================================
+   MOBILE RESPONSIVE FIXES (DAY 2 COMMITS)
+========================================== */
+@media (max-width: 768px) {
+
+  /* Commit #1: Profile Dropdown Scroll & Max Height */
+  .ca-dropdown {
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  }
