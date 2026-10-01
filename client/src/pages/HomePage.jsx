@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaXTwitter, FaPhone, FaEnvelope } from "react-icons/fa6";
 import { request } from "../lib/api";
-
 
 const slides = [
   { src: '/images/african-dish.png', alt: 'nigerian dish' },
@@ -31,27 +30,25 @@ function getCartCount() {
 }
 
 function HomePage() {
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [cartCount, setCartCount] = useState(getCartCount);
+  const [showProfile, setShowProfile] = useState(false);
+  const [homepageReviews, setHomepageReviews] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
+  const profileRef = useRef(null);
 
-const [slideIndex, setSlideIndex] = useState(0);
-const [cartCount, setCartCount] = useState(getCartCount);
-const [showProfile, setShowProfile] = useState(false);
-const [homepageReviews, setHomepageReviews] = useState([]);
-const [loadingReviews, setLoadingReviews] = useState(true);
-const profileRef = useRef(null);
+  useEffect(() => {
+    if (showProfile) {
+      const timer = setTimeout(() => {
+        const dropdown = document.querySelector(".ca-dropdown");
+        if (dropdown) {
+          dropdown.scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+      }, 150);
 
-
-useEffect(() => {
-  if (showProfile) {
-    const timer = setTimeout(() => {
-      const dropdown = document.querySelector(".ca-dropdown");
-      if (dropdown) {
-        dropdown.scrollIntoView({ behavior: "smooth", block: "end" });
-      }
-    }, 150);
-
-    return () => clearTimeout(timer);
-  }
-}, [showProfile]);
+      return () => clearTimeout(timer);
+    }
+  }, [showProfile]);
 
   const user = getStoredUser();
   const isAdmin = user?.role === 'admin' || user?.username === 'admin';
@@ -65,18 +62,16 @@ useEffect(() => {
     window.addEventListener('storage', refreshCartCount);
     window.addEventListener('comeagain-cart-change', refreshCartCount);
 
-   
+    const closeProfile = (e) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target)
+      ) {
+        setShowProfile(false);
+      }
+    };
 
-const closeProfile = (e) => {
-  if (
-    profileRef.current &&
-    !profileRef.current.contains(e.target)
-  ) {
-    setShowProfile(false);
-  }
-};
-
-document.addEventListener("mousedown", closeProfile);
+    document.addEventListener("mousedown", closeProfile);
 
     return () => {
       document.removeEventListener("mousedown", closeProfile);
@@ -84,633 +79,462 @@ document.addEventListener("mousedown", closeProfile);
       window.removeEventListener('storage', refreshCartCount);
       window.removeEventListener('comeagain-cart-change', refreshCartCount);
     };
-    console.log(
-  "Home page sees:",
-  localStorage.getItem("comeagain_cart")
-);
   }, []);
 
+  const loadHomepageReviews = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/reviews`
+      );
+      const data = await response.json();
 
+      if (Array.isArray(data)) {
+        const topReviews = [...data]
+          .sort((a, b) => {
+            if (b.rating !== a.rating) {
+              return b.rating - a.rating;
+            }
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          })
+          .slice(0, 4);
 
-
-
-
-
-const loadHomepageReviews = async () => {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/reviews`
-    );
-    const data = await response.json();
-
-    if (Array.isArray(data)) {
-      const topReviews = [...data]
-        .sort((a, b) => {
-          if (b.rating !== a.rating) {
-            return b.rating - a.rating;
-          }
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        })
-        .slice(0, 4);
-
-      setHomepageReviews(topReviews);
+        setHomepageReviews(topReviews);
+      }
+    } catch (error) {
+      console.log("Review loading error:", error);
+    } finally {
+      setLoadingReviews(false);
     }
-  } catch (error) {
-    console.log("Review loading error:", error);
-  } finally {
-    setLoadingReviews(false);
-  }
-};
+  };
 
-
-useEffect(() => {
-  loadHomepageReviews();
-}, []);
+  useEffect(() => {
+    loadHomepageReviews();
+  }, []);
 
   return (
     <div className="legacy-page">
       <header className="modern-header">
-
-  <div className="brand">
-
-    <img
-      src="/images/logo.png"
-      alt="Come Again Restaurant"
-      className="restaurant-logo"
-    />
-
-    <div>
-
-      <h1>COME AGAIN</h1>
-
-      <p>Restaurant</p>
-
-    </div>
-
-  </div>
-
-  <div className="header-text">
-
-    <h2>Our Food Is Sensational</h2>
-
-    <p>
-      Fresh Nigerian Meals Delivered Hot & Fast
-    </p>
-
-  </div>
-
-<div className="header-actions">
-
-  {user && (
-    <Link to="/cart" className="header-cart-btn">
-      🛒
-      <span>Cart</span>
-
-      {cartCount > 0 && (
-        <span className="header-cart-badge">
-          {cartCount}
-        </span>
-      )}
-    </Link>
-  )}
-
-  <div
-    className="ca-profile-menu"
-    ref={profileRef}
-  >
-
-  {user ? (
-  <>
-      <button
-        className="ca-profile-btn"
-        onClick={() => setShowProfile(!showProfile)}
-      >
-<div className="ca-avatar">
-
-  {user.avatar ? (
-
-<img
-  src={
-    user.avatar.startsWith("http")
-      ? user.avatar
-      : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
-  }
-  alt={user.username}
-  className="ca-avatar-img"
-/>
-
-  ) : (
-
-    (user.username || "U").charAt(0).toUpperCase()
-
-  )}
-
-</div>
-
-        <span>
-          {user.username}
-        </span>
-
-        <span className="ca-arrow">
-          ▼
-        </span>
-      </button>
-
-      {showProfile && (
-
-        <div className="ca-dropdown">
-
-          <div className="ca-user-info">
-
-<div className="ca-avatar large">
-
-  {user.avatar ? (
-
-<img
-  src={
-    user.avatar.startsWith("http")
-      ? user.avatar
-      : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
-  }
-  alt={user.username}
-  className="ca-avatar-img"
-/>
-
-  ) : (
-
-    (user.username || "U").charAt(0).toUpperCase()
-
-  )}
-
-</div>
-
-            <h3>{user.username}</h3>
-
-            <p>{user.email}</p>
-
+        <div className="brand">
+          <img
+            src="/images/logo.png"
+            alt="Come Again Restaurant"
+            className="restaurant-logo"
+          />
+          <div>
+            <h1>COME AGAIN</h1>
+            <p>Restaurant</p>
           </div>
-<Link
-  to="/profile"
-  className="ca-item"
->
-  👤 Profile
-</Link>
+        </div>
 
-<Link
-  to="/favorites"
-  className="ca-item"
->
-  ❤️ Favorites
-</Link>
+        <div className="header-text">
+          <h2>Our Food Is Sensational</h2>
+          <p>Fresh Nigerian Meals Delivered Hot & Fast</p>
+        </div>
 
-
-          <Link
-            to="/order-history"
-            className="ca-item"
-          >
-            📦 My Orders
-          </Link>
-
-<hr className="ca-divider" />
-
-          {isAdmin && (
-            <>
-              <Link
-                to="/admin/orders"
-                className="ca-item"
-              >
-                ⚙ Admin Orders
-              </Link>
-
-              <Link
-                to="/admin/foods"
-                className="ca-item"
-              >
-                🍲 Manage Foods
-              </Link>
-            </>
+        <div className="header-actions">
+          {user && (
+            <Link to="/cart" className="header-cart-btn">
+              🛒
+              <span>Cart</span>
+              {cartCount > 0 && (
+                <span className="header-cart-badge">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
           )}
 
-<hr className="ca-divider" />
+          <div className="ca-profile-menu" ref={profileRef}>
+            {user ? (
+              <>
+                <button
+                  className="ca-profile-btn"
+                  onClick={() => setShowProfile(!showProfile)}
+                >
+                  <div className="ca-avatar">
+                    {user.avatar ? (
+                      <img
+                        src={
+                          user.avatar.startsWith("http")
+                            ? user.avatar
+                            : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
+                        }
+                        alt={user.username}
+                        className="ca-avatar-img"
+                      />
+                    ) : (
+                      (user.username || "U").charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <span>{user.username}</span>
+                  <span className="ca-arrow">▼</span>
+                </button>
 
-          <button
-            className="ca-item logout"
-            onClick={() => {
+                {showProfile && (
+                  <div className="ca-dropdown">
+                    <div className="ca-user-info">
+                      <div className="ca-avatar large">
+                        {user.avatar ? (
+                          <img
+                            src={
+                              user.avatar.startsWith("http")
+                                ? user.avatar
+                                : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
+                            }
+                            alt={user.username}
+                            className="ca-avatar-img"
+                          />
+                        ) : (
+                          (user.username || "U").charAt(0).toUpperCase()
+                        )}
+                      </div>
+                      <h3>{user.username}</h3>
+                      <p>{user.email}</p>
+                    </div>
 
-              localStorage.removeItem("comeagain_user");
-              localStorage.removeItem("comeagain_token");
-              localStorage.removeItem("comeagain_cart");
-              localStorage.removeItem("comeagain_checkout_location");
+                    <Link to="/profile" className="ca-item">
+                      👤 Profile
+                    </Link>
 
-              window.location.href="/";
+                    <Link to="/favorites" className="ca-item">
+                      ❤️ Favorites
+                    </Link>
 
-            }}
-          >
-            🚪 Logout
-          </button>
+                    <Link to="/order-history" className="ca-item">
+                      📦 My Orders
+                    </Link>
 
+                    <hr className="ca-divider" />
+
+                    {isAdmin && (
+                      <>
+                        <Link to="/admin/orders" className="ca-item">
+                          ⚙ Admin Orders
+                        </Link>
+                        <Link to="/admin/foods" className="ca-item">
+                          🍲 Manage Foods
+                        </Link>
+                      </>
+                    )}
+
+                    <hr className="ca-divider" />
+
+                    <button
+                      className="ca-item logout"
+                      onClick={() => {
+                        localStorage.removeItem("comeagain_user");
+                        localStorage.removeItem("comeagain_token");
+                        localStorage.removeItem("comeagain_cart");
+                        localStorage.removeItem("comeagain_checkout_location");
+                        window.location.href = "/";
+                      }}
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="ca-auth-buttons">
+                <Link to="/login" className="order-btn">
+                  Login
+                </Link>
+                <Link to="/register" className="order-btn admin-link">
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
-
-      )}
-
-    
-
-  </>
-
-) : (
-
-    <div className="ca-auth-buttons">
-
-      <Link
-        to="/login"
-        className="order-btn"
-      >
-        Login
-      </Link>
-
-      <Link
-        to="/register"
-        className="order-btn admin-link"
-      >
-        Register
-      </Link>
-
-    </div>
-
-  )}
-
-</div>
-
-</div>
-
-</header>
-
-
+      </header>
 
       <section className="hero-section">
-  <div className="hero-content">
+        <div className="hero-content">
+          <div className="hero-text">
+            <p className="hero-small">Welcome to</p>
+            <h1>COME AGAIN RESTAURANT</h1>
+            <p className="hero-tagline">Our Food is Sensational...</p>
+            <h3>Fresh Nigerian Meals Delivered Hot & Fast</h3>
+            <p>
+              Enjoy delicious Nigerian dishes prepared with fresh ingredients and delivered right to your doorstep.
+            </p>
 
-    <div className="hero-text">
+            <div className="hero-buttons">
+              <Link to="/order" className="nav-btn">
+                🍽️ Order Now
+              </Link>
+              <Link to="/order" className="nav-btn">
+                📖 View Menu
+              </Link>
+            </div>
+          </div>
 
-      <p className="hero-small">
-        Welcome to
-      </p>
+          <div className="hero-image">
+            <img
+              src={slides[slideIndex].src}
+              alt={slides[slideIndex].alt}
+            />
 
-      <h1>COME AGAIN RESTAURANT</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSlideIndex(index)}
+                  aria-label={`Slide ${index + 1}`}
+                  style={{
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    border: 'none',
+                    backgroundColor: slideIndex === index ? '#e65100' : '#ccc',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease'
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <p className="hero-tagline">
-        Our Food is Sensational...
-      </p>
+      <section className="features-section">
+        <div className="feature-card">
+          <div className="feature-icon">🚚</div>
+          <h3>Fast Delivery</h3>
+          <p>Quick delivery anywhere within Lagos.</p>
+        </div>
 
-      <h3>
-        Fresh Nigerian Meals Delivered Hot & Fast
-      </h3>
+        <div className="feature-card">
+          <div className="feature-icon">🍲</div>
+          <h3>Fresh Meals</h3>
+          <p>Prepared fresh every day using quality ingredients.</p>
+        </div>
 
-      <p>
-        Enjoy delicious Nigerian dishes prepared with fresh ingredients and delivered right to your doorstep.
-      </p>
+        <div className="feature-card">
+          <div className="feature-icon">💳</div>
+          <h3>Secure Payment</h3>
+          <p>Pay safely with Paystack or Cash on Delivery.</p>
+        </div>
 
-<div className="hero-buttons">
-  <Link to="/order" className="nav-btn">
-    🍽️ Order Now
-  </Link>
+        <div className="feature-card">
+          <div className="feature-icon">⭐</div>
+          <h3>Great Taste</h3>
+          <p>Delicious Nigerian meals you'll always come back for.</p>
+        </div>
+      </section>
 
-  <Link to="/order" className="nav-btn">
-    📖 View Menu
-  </Link>
-</div>
+      <section className="gallery-section">
+        <h2>Popular Dishes</h2>
+        <div className="food-gallery">
+          <div className="food-item">
+            <img src="/images/jollof-rice-meat.png" alt="Jollof Rice" />
+            <h3>Jollof Rice</h3>
+            <Link to="/order" className="nav-btn">
+              Order Now
+            </Link>
+          </div>
 
-    </div>
+          <div className="food-item">
+            <img src="/images/fried-rice-chicken.png" alt="Fried Rice" />
+            <h3>Fried Rice</h3>
+            <Link to="/order" className="nav-btn">
+              Order Now
+            </Link>
+          </div>
 
-<div className="hero-image">
-      <img
-        src={slides[slideIndex].src}
-        alt={slides[slideIndex].alt}
-      />
+          <div className="food-item">
+            <img src="/images/spaghetti.png" alt="Spaghetti" />
+            <h3>Spaghetti</h3>
+            <Link to="/order" className="nav-btn">
+              Order Now
+            </Link>
+          </div>
 
-      {/* Interactive Dots */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setSlideIndex(index)}
-            aria-label={`Slide ${index + 1}`}
-            style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              border: 'none',
-              backgroundColor: slideIndex === index ? '#e65100' : '#ccc',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease'
-            }}
-          />
-        ))}
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<section className="features-section">
-
-  <div className="feature-card">
-    <div className="feature-icon">🚚</div>
-    <h3>Fast Delivery</h3>
-    <p>Quick delivery anywhere within Lagos.</p>
-  </div>
-
-  <div className="feature-card">
-    <div className="feature-icon">🍲</div>
-    <h3>Fresh Meals</h3>
-    <p>Prepared fresh every day using quality ingredients.</p>
-  </div>
-
-  <div className="feature-card">
-    <div className="feature-icon">💳</div>
-    <h3>Secure Payment</h3>
-    <p>Pay safely with Paystack or Cash on Delivery.</p>
-  </div>
-
-  <div className="feature-card">
-    <div className="feature-icon">⭐</div>
-    <h3>Great Taste</h3>
-    <p>Delicious Nigerian meals you'll always come back for.</p>
-  </div>
-
-</section>
-
-<section className="gallery-section">
-
-  <h2>Popular Dishes</h2>
-
-  <div className="food-gallery">
-
-    <div className="food-item">
-      <img src="/images/jollof-rice-meat.png" alt="Jollof Rice" />
-      <h3>Jollof Rice</h3>
-      <Link to="/order" className="nav-btn">
-        Order Now
-      </Link>
-    </div>
-
-    <div className="food-item">
-      <img src="/images/fried-rice-chicken.png" alt="Fried Rice" />
-      <h3>Fried Rice</h3>
-      <Link to="/order" className="nav-btn">
-        Order Now
-      </Link>
-    </div>
-
-    <div className="food-item">
-      <img src="/images/spaghetti.png" alt="Spaghetti" />
-      <h3>Spaghetti</h3>
-      <Link to="/order" className="nav-btn">
-        Order Now
-      </Link>
-    </div>
-
-    <div className="food-item">
-      <img src="/images/egusi.png" alt="Egusi Soup" />
-      <h3>Egusi Soup</h3>
-      <Link to="/order" className="nav-btn">
-        Order Now
-      </Link>
-    </div>
-
-  </div>
-
-</section>
-
-      
+          <div className="food-item">
+            <img src="/images/egusi.png" alt="Egusi Soup" />
+            <h3>Egusi Soup</h3>
+            <Link to="/order" className="nav-btn">
+              Order Now
+            </Link>
+          </div>
+        </div>
+      </section>
 
       <section className="why-us">
-    <h2>Why Choose Come Again Restaurant?</h2>
+        <h2>Why Choose Come Again Restaurant?</h2>
 
-    <div className="why-grid">
-
-        <div className="why-box">
+        <div className="why-grid">
+          <div className="why-box">
             🍽️
             <h3>Fresh Ingredients</h3>
-            <p>
-                Every meal is prepared fresh using carefully selected ingredients.
-            </p>
-        </div>
+            <p>Every meal is prepared fresh using carefully selected ingredients.</p>
+          </div>
 
-        <div className="why-box">
+          <div className="why-box">
             🚚
             <h3>Fast Delivery</h3>
-            <p>
-                We deliver hot meals quickly across Lagos.
-            </p>
-        </div>
+            <p>We deliver hot meals quickly across Lagos.</p>
+          </div>
 
-        <div className="why-box">
+          <div className="why-box">
             👨‍🍳
             <h3>Experienced Chefs</h3>
-            <p>
-                Delicious Nigerian meals cooked by experienced chefs.
-            </p>
-        </div>
+            <p>Delicious Nigerian meals cooked by experienced chefs.</p>
+          </div>
 
-        <div className="why-box">
+          <div className="why-box">
             💳
             <h3>Easy Payment</h3>
-            <p>
-                Pay online with Paystack or choose Cash on Delivery.
-            </p>
+            <p>Pay online with Paystack or choose Cash on Delivery.</p>
+          </div>
         </div>
+      </section>
 
-    </div>
+      <section className="reviews-section">
+        <h2>What Our Customers Say</h2>
 
-</section>
+        <div className="reviews-container">
+          {loadingReviews ? (
+            <p>Loading customer reviews...</p>
+          ) : homepageReviews.length === 0 ? (
+            <p>No customer reviews yet.</p>
+          ) : (
+            homepageReviews.map((review) => (
+              <div className="review-card" key={review._id}>
+                {review.user?.avatar ? (
+                  <img
+                    src={review.user.avatar}
+                    alt={review.user.username}
+                    className="customer-review-avatar"
+                  />
+                ) : (
+                  <div className="customer-review-letter">
+                    {review.user?.username?.charAt(0).toUpperCase()}
+                  </div>
+                )}
 
-<section className="reviews-section">
+                <div className="stars">
+                  {"⭐".repeat(review.rating)}
+                </div>
 
-<h2>What Our Customers Say</h2>
+                <p>"{review.comment}"</p>
 
+                <h4>- {review.user?.username}</h4>
 
-<div className="reviews-container">
+                <p className="review-food-name">
+                  Ordered: {review.food?.name}
+                </p>
 
+                <p className="review-date">
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
 
-{loadingReviews ? (
+      <section className="map-section">
+        <h2>Find Us</h2>
 
-<p>Loading customer reviews...</p>
+        <p>Visit Come Again Restaurant or order online for fast delivery.</p>
 
-) : homepageReviews.length === 0 ? (
-
-<p>No customer reviews yet.</p>
-
-) : (
-
-
-homepageReviews.map((review)=>(
-
-<div 
-className="review-card"
-key={review._id}
->
-
-
-{review.user?.avatar ? (
-
-<img
-src={review.user.avatar}
-alt={review.user.username}
-className="customer-review-avatar"
-/>
-
-
-) : (
-
-<div className="customer-review-letter">
-
-{review.user?.username?.charAt(0).toUpperCase()}
-
-</div>
-
-)}
-
-
-
-<div className="stars">
-
-{"⭐".repeat(review.rating)}
-
-</div>
-
-
-<p>
-
-"{review.comment}"
-
-</p>
-
-
-<h4>
-
-- {review.user?.username}
-
-</h4>
-
-
-<p className="review-food-name">
-
-Ordered: {review.food?.name}
-
-</p>
-
-
-<p className="review-date">
-
-{new Date(review.createdAt).toLocaleDateString()}
-
-</p>
-
-
-</div>
-
-
-))
-
-)}
-
-
-</div>
-
-
-</section>
-
-<section className="map-section">
-
-  <h2>Find Us</h2>
-
-  <p>
-    Visit Come Again Restaurant or order online for fast delivery.
-  </p>
-
-  <div className="map-container">
-
-<iframe
-  title="Come Again Restaurant Location"
-  src="https://www.openstreetmap.org/export/embed.html?bbox=3.1436%2C6.3750%2C3.5436%2C6.6750&layer=mapnik&marker=6.5244%2C3.3792"
-  width="100%"
-  height="450"
-  style={{ border: 0 }}
-  loading="lazy"
-></iframe>
-
-
-  </div>
-
-</section>
+        <div className="map-container">
+          <iframe
+            title="Come Again Restaurant Location"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=3.1436%2C6.3750%2C3.5436%2C6.6750&layer=mapnik&marker=6.5244%2C3.3792"
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
 
       <section className="contact-section">
+        <div className="contact-card">
+          <div className="contact-left">
+            <h2>📍 Contact Us</h2>
 
-  <div className="contact-card">
+            <p>
+              <strong>Address</strong><br />
+              343 Arabambi Close, Lagos, Nigeria
+            </p>
 
-    <div className="contact-left">
+            <p>
+              <strong>Email</strong><br />
+              <a
+                href="mailto:Miknelandex@gmail.com"
+                title="Email Miknelandex@gmail.com"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ff5722',
+                  color: '#fff',
+                  fontSize: '18px',
+                  marginTop: '4px'
+                }}
+              >
+                <FaEnvelope />
+              </a>
+            </p>
 
-      <h2>📍 Contact Us</h2>
+            <p>
+              <strong>Call Us</strong><br />
+              <a
+                href="tel:+2347040313437"
+                title="Call +2347040313437"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ff5722',
+                  color: '#fff',
+                  fontSize: '18px',
+                  marginTop: '4px'
+                }}
+              >
+                <FaPhone />
+              </a>
+            </p>
+          </div>
 
-      <p><strong>Address</strong><br />
-      343 Arabambi Close, Lagos, Nigeria</p>
+          <div className="contact-right">
+            <h2>Follow Us</h2>
 
-      <p><strong>Email</strong><br />
-      <a href="mailto:comeagainfoods@gmail.com">
-        comeagainfoods@gmail.com
-      </a></p>
+            <p>
+              Follow us for new meals, discounts and daily specials.
+            </p>
 
-      <p><strong>Phone</strong><br />
-      <a href="tel:+2341234567890">
-        +234 123 456 7890
-      </a></p>
+            <div className="social-icons">
+              <a href="https://facebook.com" target="_blank" rel="noreferrer">
+                <FaFacebookF />
+              </a>
 
-    </div>
+              <a href="https://instagram.com" target="_blank" rel="noreferrer">
+                <FaInstagram />
+              </a>
 
-    <div className="contact-right">
-
-      <h2>Follow Us</h2>
-
-      <p>
-        Follow us for new meals, discounts and daily specials.
-      </p>
-
-      <div className="social-icons">
-
-        <a href="https://facebook.com" target="_blank" rel="noreferrer">
-          <FaFacebookF />
-        </a>
-
-        <a href="https://instagram.com" target="_blank" rel="noreferrer">
-          <FaInstagram />
-        </a>
-
-        <a href="https://x.com" target="_blank" rel="noreferrer">
-          <FaXTwitter />
-        </a>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
+              <a href="https://x.com" target="_blank" rel="noreferrer">
+                <FaXTwitter />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <footer className="modern-footer">
-
-    <h2>COME AGAIN RESTAURANT</h2>
-
-    <p>
-       Our Food is Sensational... Come Again Soon.
-    </p>
-
-    <small>
-        © 2026 Come Again Restaurant. All Rights Reserved.
-    </small>
-
-</footer>
+        <h2>COME AGAIN RESTAURANT</h2>
+        <p>Our Food is Sensational... Come Again Soon.</p>
+        <small>© 2026 Come Again Restaurant. All Rights Reserved.</small>
+      </footer>
     </div>
   );
 }
