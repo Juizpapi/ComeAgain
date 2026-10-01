@@ -2,24 +2,18 @@ import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { FaPaperPlane, FaUser, FaComments } from 'react-icons/fa6';
 
-// Resolve Backend API URL cleanly
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const SOCKET_URL = API_URL.replace('/api', '');
-
-// Initialize single persistent socket instance outside component
-const socket = io(SOCKET_URL, {
-  autoConnect: true,
-  transports: ['websocket', 'polling'],
-});
 
 function AdminChat() {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [replyText, setReplyText] = useState('');
+  const [socket, setSocket] = useState(null);
   const chatEndRef = useRef(null);
 
-  // 1. Fetch active customer chat rooms
+  // 1. Fetch active rooms
   const fetchRooms = async () => {
     try {
       const response = await fetch(`${API_URL}/chat/rooms`);
@@ -37,9 +31,14 @@ function AdminChat() {
     fetchRooms();
   }, []);
 
-  // 2. Setup socket message listener once
+  // 2. Setup socket connection
   useEffect(() => {
-    const handleReceiveMessage = (incomingMsg) => {
+    const newSocket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+    });
+    setSocket(newSocket);
+
+    newSocket.on('receive_message', (incomingMsg) => {
       if (selectedRoom && incomingMsg.chatRoom === selectedRoom) {
         setMessages((prev) => {
           const exists = prev.some((m) => m._id === incomingMsg._id);
@@ -47,19 +46,19 @@ function AdminChat() {
         });
       }
       fetchRooms();
-    };
-
-    socket.on('receive_message', handleReceiveMessage);
+    });
 
     return () => {
-      socket.off('receive_message', handleReceiveMessage);
+      newSocket.disconnect();
     };
   }, [selectedRoom]);
 
-  // 3. Load chat history when selecting a room
+  // 3. Load conversation when room is selected
   const handleSelectRoom = async (roomId) => {
     setSelectedRoom(roomId);
-    socket.emit('join_room', roomId);
+    if (socket) {
+      socket.emit('join_room', roomId);
+    }
 
     try {
       const response = await fetch(`${API_URL}/chat/history/${roomId}`);
@@ -73,15 +72,14 @@ function AdminChat() {
     }
   };
 
-  // Auto-scroll chat box to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 4. Send admin reply
+  // 4. Send reply
   const handleSendReply = (e) => {
     e.preventDefault();
-    if (!replyText.trim() || !selectedRoom) return;
+    if (!replyText.trim() || !selectedRoom || !socket) return;
 
     const msgPayload = {
       chatRoom: selectedRoom,
@@ -102,7 +100,7 @@ function AdminChat() {
       </h2>
 
       <div className="admin-chat-layout" style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '20px', height: '600px' }}>
-        {/* Left Sidebar: Active Rooms */}
+        {/* Left Sidebar */}
         <div className="admin-chat-sidebar" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #ddd', overflowY: 'auto' }}>
           <div style={{ padding: '16px', borderBottom: '1px solid #eee', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>Active Conversations ({rooms.length})</span>
@@ -143,7 +141,7 @@ function AdminChat() {
           )}
         </div>
 
-        {/* Right Area: Messages */}
+        {/* Right Area */}
         <div className="admin-chat-main" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #ddd', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {selectedRoom ? (
             <>

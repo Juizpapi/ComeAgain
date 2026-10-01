@@ -14,9 +14,8 @@ function getChatRoomId(user) {
   return guestId;
 }
 
-const SOCKET_URL = import.meta.env.VITE_API_URL
-  ? import.meta.env.VITE_API_URL.replace('/api', '')
-  : 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const SOCKET_URL = API_URL.replace('/api', '');
 
 function ChatWidget({ user }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,13 +28,12 @@ function ChatWidget({ user }) {
   const senderName = user?.username || 'Guest';
   const senderId = user?._id || user?.id || chatRoom;
 
-  // 1. Load history from server
+  // 1. Load history from server using API_URL
   useEffect(() => {
     const loadHistory = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/chat/history/${chatRoom}`
-        );
+        const response = await fetch(`${API_URL}/chat/history/${chatRoom}`);
+        if (!response.ok) return;
         const data = await response.json();
         if (Array.isArray(data)) {
           setMessages(data);
@@ -48,9 +46,11 @@ function ChatWidget({ user }) {
     loadHistory();
   }, [chatRoom]);
 
-  // 2. Setup socket connection & room listener
+  // 2. Setup socket connection
   useEffect(() => {
-    const newSocket = io(SOCKET_URL);
+    const newSocket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+    });
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
@@ -58,18 +58,19 @@ function ChatWidget({ user }) {
     });
 
     newSocket.on('receive_message', (incomingMsg) => {
-      setMessages((prev) => {
-        // Prevent duplicate if already added optimistically
-        const isDuplicate = prev.some(
-          (m) =>
-            m._id === incomingMsg._id ||
-            (m.text === incomingMsg.text &&
-              m.sender === incomingMsg.sender &&
-              Math.abs(new Date(m.createdAt) - new Date(incomingMsg.createdAt)) < 3000)
-        );
-        if (isDuplicate) return prev;
-        return [...prev, incomingMsg];
-      });
+      if (incomingMsg.chatRoom === chatRoom) {
+        setMessages((prev) => {
+          const isDuplicate = prev.some(
+            (m) =>
+              m._id === incomingMsg._id ||
+              (m.text === incomingMsg.text &&
+                m.sender === incomingMsg.sender &&
+                Math.abs(new Date(m.createdAt) - new Date(incomingMsg.createdAt)) < 3000)
+          );
+          if (isDuplicate) return prev;
+          return [...prev, incomingMsg];
+        });
+      }
     });
 
     return () => {
@@ -77,7 +78,7 @@ function ChatWidget({ user }) {
     };
   }, [chatRoom]);
 
-  // Auto-scroll chat box to latest message
+  // Auto-scroll chat box
   useEffect(() => {
     if (isOpen) {
       chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -101,10 +102,8 @@ function ChatWidget({ user }) {
       createdAt: new Date().toISOString(),
     };
 
-    // Show message immediately in UI
     setMessages((prev) => [...prev, tempMessage]);
 
-    // Send to backend via Socket.io
     if (socket) {
       socket.emit('send_message', {
         chatRoom,
