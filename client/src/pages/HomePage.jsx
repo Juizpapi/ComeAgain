@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaXTwitter, FaPhone, FaEnvelope } from "react-icons/fa6";
-import { request } from "../lib/api";
 
 const slides = [
   { src: '/images/african-dish.png', alt: 'nigerian dish' },
@@ -260,9 +259,6 @@ function HomePage() {
             </p>
 
             <div className="hero-buttons">
-              <Link to="/order" className="nav-btn">
-                🍽️ Order Now
-              </Link>
               <Link to="/order" className="nav-btn">
                 📖 View Menu
               </Link>

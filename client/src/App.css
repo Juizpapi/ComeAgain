@@ -2874,10 +2874,9 @@ font-size:34px;
 
 .features-section{
 
-    grid-template-columns:1fr;
-
-    padding:30px 15px;
-
+display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 
@@ -3078,3 +3077,11 @@ font-size:34px;
     box-sizing: border-box !important;
   }
   }
+
+  /* Mobile View: 2 columns per row */
+@media (max-width: 768px) {
+  .features-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
