@@ -15,6 +15,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminFoodsPage from './pages/AdminFoodsPage';
 import FavoritesPage from "./pages/FavoritesPage";
+import AdminChat from './pages/Adminchat';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="/admin/orders" element={<AdminOrdersPage />} />
             <Route path="/admin/foods" element={<AdminFoodsPage />} />
           </Route>
+          <Route path="/admin/chat" element={<AdminChat />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaXTwitter, FaPhone, FaEnvelope } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaXTwitter, FaPhone, FaEnvelope, FaHeadset } from "react-icons/fa6";
+import ChatWidget from '../components/ChatWidget';
 
 const slides = [
   { src: '/images/african-dish.png', alt: 'nigerian dish' },
@@ -212,6 +213,9 @@ function HomePage() {
                         </Link>
                         <Link to="/admin/foods" className="ca-item">
                           🍲 Manage Foods
+                        </Link>
+                        <Link to="/admin/chat" className="ca-item">
+                          💬 Customer Chat
                         </Link>
                       </>
                     )}
@@ -531,6 +535,9 @@ function HomePage() {
         <p>Our Food is Sensational... Come Again Soon.</p>
         <small>© 2026 Come Again Restaurant. All Rights Reserved.</small>
       </footer>
+      
+{/* Floating Live Chat Widget */}
+      <ChatWidget user={user} />
     </div>
   );
 }
