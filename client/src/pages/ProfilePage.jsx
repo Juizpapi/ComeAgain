@@ -2,364 +2,261 @@ import { useEffect, useRef, useState } from "react";
 import { request } from "../lib/api";
 import "../styles/ProfilePage.css";
 
+function getStoredUser() {
+  try {
+    return JSON.parse(localStorage.getItem("comeagain_user"));
+  } catch {
+    return null;
+  }
+}
+
 function ProfilePage() {
-  const [user, setUser] = useState(null);
-const [editing, setEditing] = useState(false);
-const [success, setSuccess] = useState("");
-const fileInputRef = useRef(null);
-const [form, setForm] = useState({
-  username: "",
-  email: "",
-  address: "",
-  phoneNumber: "",
-});
+  const [user, setUser] = useState(getStoredUser);
+  const [loading, setLoading] = useState(!user);
+  const [editing, setEditing] = useState(false);
+  const [success, setSuccess] = useState("");
+  const fileInputRef = useRef(null);
+
+  const [form, setForm] = useState(() => ({
+    username: user?.username || "",
+    email: user?.email || "",
+    address: user?.address || "",
+    phoneNumber: user?.phoneNumber || "",
+  }));
 
   useEffect(() => {
-  const loadProfile = async () => {
+    const loadProfile = async () => {
+      try {
+        const data = await request("/auth/profile");
+        setUser(data.user);
+        
+        // Keep localStorage in sync with fresh server data
+        localStorage.setItem("comeagain_user", JSON.stringify(data.user));
+
+        setForm({
+          username: data.user.username,
+          email: data.user.email,
+          address: data.user.address || "",
+          phoneNumber: data.user.phoneNumber || "",
+        });
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  const handleSave = async () => {
     try {
-      const data = await request("/auth/profile");
-      
+      const data = await request("/auth/profile", {
+        method: "PUT",
+        body: JSON.stringify(form),
+      });
 
+      setUser(data.user);
+      localStorage.setItem("comeagain_user", JSON.stringify(data.user));
+      setEditing(false);
 
-setUser(data.user);
-setForm({
-  username: data.user.username,
-  email: data.user.email,
-  address: data.user.address || "",
-  phoneNumber: data.user.phoneNumber || "",
-});
-
+      setSuccess("Profile updated successfully.");
+      setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
-      console.error(error);
+      alert(error.message);
     }
   };
 
-  loadProfile();
-}, []);
+  const handleAvatarUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-const handleSave = async () => {
-  try {
-    const data = await request("/auth/profile", {
-      method: "PUT",
-      body: JSON.stringify(form),
-    });
+    const formData = new FormData();
+    formData.append("avatar", file);
 
-    setUser(data.user);
+    try {
+      const data = await request("/auth/avatar", {
+        method: "POST",
+        body: formData,
+      });
 
-    localStorage.setItem(
-      "comeagain_user",
-      JSON.stringify(data.user)
-    );
+      setUser(data.user);
+      localStorage.setItem("comeagain_user", JSON.stringify(data.user));
 
-    setEditing(false);
-
-    setSuccess("Profile updated successfully.");
-
-setTimeout(() => {
-  setSuccess("");
-}, 3000);
-
-  } catch (error) {
-    alert(error.message);
-  }
-};
-
-const handleAvatarUpload = async (event) => {
-
-  const file = event.target.files[0];
-
-  if (!file) return;
-
-  const formData = new FormData();
-
-  formData.append("avatar", file);
-
-  try {
-
-    const data = await request("/auth/avatar", {
-      method: "POST",
-      body: formData,
-    });
-
-    setUser(data.user);
-
-    localStorage.setItem(
-      "comeagain_user",
-      JSON.stringify(data.user)
-    );
-
-    setSuccess("📷 Profile photo updated!");
-
-    setTimeout(() => {
-      setSuccess("");
-    }, 3000);
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-
-};
+      setSuccess("📷 Profile photo updated!");
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <div className="profile-page">
-
-{success && (
-
-<div className="success-toast">
-
-    <div className="success-icon">
-        ✓
-    </div>
-
-    <div className="success-content">
-
-        <div className="success-title">
-            Success
+      {success && (
+        <div className="success-toast">
+          <div className="success-icon">✓</div>
+          <div className="success-content">
+            <div className="success-title">Success</div>
+            <div className="success-message">{success}</div>
+          </div>
+          <div className="success-close" onClick={() => setSuccess("")}>
+            ✕
+          </div>
         </div>
-
-        <div className="success-message">
-            {success}
-        </div>
-
-    </div>
-
-    <div
-        className="success-close"
-        onClick={() => setSuccess("")}
-    >
-        ✕
-    </div>
-
-</div>
-
-)}
+      )}
 
       <div className="profile-header">
+        <div className="profile-avatar">
+          {user?.avatar ? (
+            <img
+              src={
+                user.avatar.startsWith("http")
+                  ? user.avatar
+                  : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
+              }
+              alt="Profile"
+              className="profile-avatar-img"
+            />
+          ) : (
+            user?.username?.charAt(0).toUpperCase() || "?"
+          )}
+        </div>
 
-  <div className="profile-avatar">
+        <h2>{user?.username}</h2>
+        <p>{user?.email}</p>
 
-  {user?.avatar ? (
+        <p className="profile-role">
+          {user?.role === "admin" ? "👑 Administrator" : "🍽️ Customer"}
+        </p>
 
-<img
-  src={
-    user.avatar.startsWith("http")
-      ? user.avatar
-      : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${user.avatar}`
-  }
-  alt="Profile"
-  className="profile-avatar-img"
-/>
+        <span className="verified-badge">
+          {loading && !user ? (
+            "⏳ Checking status..."
+          ) : user?.is_confirmed ? (
+            "✅ Verified Account"
+          ) : (
+            "⚠️ Email Not Verified"
+          )}
+        </span>
+      </div>
 
-  ) : (
+      <hr />
 
-    user?.username?.charAt(0).toUpperCase()
+      <div className="profile-info">
+        <div className="profile-row">
+          <span>Username</span>
+          {editing ? (
+            <input
+              className="profile-input"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+            />
+          ) : (
+            <strong>{user?.username}</strong>
+          )}
+        </div>
 
-  )}
+        <div className="profile-row">
+          <span>Email</span>
+          {editing ? (
+            <input
+              className="profile-input"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          ) : (
+            <strong>{user?.email}</strong>
+          )}
+        </div>
 
-</div>
+        <div className="profile-row">
+          <span>Delivery Address</span>
+          {editing ? (
+            <input
+              className="profile-input"
+              type="text"
+              placeholder="Enter your delivery address"
+              value={form.address}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+            />
+          ) : (
+            <strong>{user?.address || "No address added"}</strong>
+          )}
+        </div>
 
+        <div className="profile-row">
+          <span>Phone Number</span>
+          {editing ? (
+            <input
+              className="profile-input"
+              type="text"
+              placeholder="Enter phone number"
+              value={form.phoneNumber}
+              onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+            />
+          ) : (
+            <strong>{user?.phoneNumber || "No phone number added"}</strong>
+          )}
+        </div>
 
-  <h2>{user?.username}</h2>
+        <div className="profile-row">
+          <span>Member Since</span>
+          <strong>
+            {user?.createdAt
+              ? new Date(user.createdAt).toLocaleDateString()
+              : "--"}
+          </strong>
+        </div>
+      </div>
 
-  <p>{user?.email}</p>
+      <hr />
 
-  <p className="profile-role">
-    {user?.role === "admin"
-      ? "👑 Administrator"
-      : "🍽️ Customer"}
-  </p>
+      <div className="profile-actions">
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleAvatarUpload}
+        />
 
-  <span className="verified-badge">
-    {user?.is_confirmed
-      ? "✅ Verified Account"
-      : "⚠️ Email Not Verified"}
-  </span>
+        <button
+          className="profile-btn"
+          onClick={() => fileInputRef.current.click()}
+        >
+          📷 Change Photo
+        </button>
 
-</div>
+        {editing ? (
+          <>
+            <button className="profile-btn" onClick={handleSave}>
+              💾 Save Changes
+            </button>
 
-<hr />
+            <button
+              className="profile-btn"
+              onClick={() => {
+                setEditing(false);
+                setForm({
+                  username: user?.username || "",
+                  email: user?.email || "",
+                  address: user?.address || "",
+                  phoneNumber: user?.phoneNumber || "",
+                });
+              }}
+            >
+              ❌ Cancel
+            </button>
+          </>
+        ) : (
+          <button className="profile-btn" onClick={() => setEditing(true)}>
+            ✏️ Edit Profile
+          </button>
+        )}
 
-<div className="profile-info">
-
- <div className="profile-row">
-
-  <span>Username</span>
-
-  {editing ? (
-
-    <input
-      className="profile-input"
-      value={form.username}
-      onChange={(e) =>
-        setForm({
-          ...form,
-          username: e.target.value,
-        })
-      }
-    />
-
-  ) : (
-
-    <strong>{user?.username}</strong>
-
-  )}
-
-</div>
-
- <div className="profile-row">
-
-  <span>Email</span>
-
-  {editing ? (
-
-    <input
-      className="profile-input"
-      type="email"
-      value={form.email}
-      onChange={(e) =>
-        setForm({
-          ...form,
-          email: e.target.value,
-        })
-      }
-    />
-
-  ) : (
-
-    <strong>{user?.email}</strong>
-
-  )}
-
-</div>
-
-<div className="profile-row">
-
-  <span>Delivery Address</span>
-
-  {editing ? (
-
-    <input
-      className="profile-input"
-      type="text"
-      placeholder="Enter your delivery address"
-      value={form.address}
-      onChange={(e) =>
-        setForm({
-          ...form,
-          address: e.target.value,
-        })
-      }
-    />
-
-  ) : (
-
-    <strong>{user?.address || "No address added"}</strong>
-
-  )}
-
-</div>
-
-<div className="profile-row">
-
-  <span>Phone Number</span>
-
-  {editing ? (
-
-    <input
-      className="profile-input"
-      type="text"
-      placeholder="Enter phone number"
-      value={form.phoneNumber}
-      onChange={(e) =>
-        setForm({
-          ...form,
-          phoneNumber: e.target.value,
-        })
-      }
-    />
-
-  ) : (
-
-    <strong>
-      {user?.phoneNumber || "No phone number added"}
-    </strong>
-
-  )}
-
-</div>
-
-  <div className="profile-row">
-    <span>Member Since</span>
-    <strong>
-      {user?.createdAt
-        ? new Date(user.createdAt).toLocaleDateString()
-        : "--"}
-    </strong>
-  </div>
-
-</div>
-
-<hr />
-
-<div className="profile-actions">
-
-<>
-  <input
-    type="file"
-    accept="image/*"
-    ref={fileInputRef}
-    style={{ display: "none" }}
-    onChange={handleAvatarUpload}
-  />
-
-  <button
-    className="profile-btn"
-    onClick={() => fileInputRef.current.click()}
-  >
-    📷 Change Photo
-  </button>
-</>
-
-  {editing ? (
-    <>
-      <button
-        className="profile-btn"
-        onClick={handleSave}
-      >
-        💾 Save Changes
-      </button>
-
-      <button
-        className="profile-btn"
-        onClick={() => {
-          setEditing(false);
-
-    setForm({
-      username: user.username,
-      email: user.email,
-      address: user.address || "",
-          });
-        }}
-      >
-        ❌ Cancel
-      </button>
-    </>
-  ) : (
-    <button
-      className="profile-btn"
-      onClick={() => setEditing(true)}
-    >
-      ✏️ Edit Profile
-    </button>
-  )}
-
-  <button className="profile-btn">
-    🔒 Change Password
-  </button>
-
-</div>
+        <button className="profile-btn">🔒 Change Password</button>
+      </div>
     </div>
   );
 }
