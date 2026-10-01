@@ -15,7 +15,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage';
 import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminFoodsPage from './pages/AdminFoodsPage';
 import FavoritesPage from "./pages/FavoritesPage";
-import AdminChat from './pages/Adminchat';
+import AdminChat from './pages/AdminChat'; 
 
 function App() {
   return (
