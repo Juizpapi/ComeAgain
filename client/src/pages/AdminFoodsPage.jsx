@@ -29,8 +29,28 @@ const emptyForm = {
   addons: [],
 };
 
+// Helper function to cleanly extract add-on names without [object Object]
+const getAddonName = (addon) => {
+  if (!addon) return '';
+  if (typeof addon === 'object') return addon.name || addon.title || '';
+  if (typeof addon === 'string') {
+    if (addon.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(addon);
+        return parsed.name || parsed.title || addon;
+      } catch {
+        return addon;
+      }
+    }
+    return addon;
+  }
+  return String(addon);
+};
+
 function AdminFoodsPage() {
   const [foods, setFoods] = useState([]);
+  const [deletedFoods, setDeletedFoods] = useState([]);
+  const [activeTab, setActiveTab] = useState('active'); // 'active' | 'trash'
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState('');
@@ -106,13 +126,13 @@ function AdminFoodsPage() {
   const handleEdit = (food) => {
     setEditingId(food._id);
 
-    const existingAddons = (food.addons || []).map((item) =>
-      typeof item === 'object' ? item.name : item
-    );
+    const existingAddons = (food.addons || [])
+      .map(getAddonName)
+      .filter(Boolean);
 
     setForm({
-      name: food.name,
-      price: food.price,
+      name: food.name || '',
+      price: food.price || '',
       category: food.category || 'Rice',
       recommended: food.recommended || '',
       addons: existingAddons,
@@ -124,18 +144,61 @@ function AdminFoodsPage() {
     });
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (food) => {
     try {
-      await request(`/foods/${id}`, { method: 'DELETE' });
-      setMessage("Menu item removed successfully.");
+      await request(`/foods/${food._id}`, { method: 'DELETE' }).catch(() => {});
+      
+      setDeletedFoods((prev) => [...prev.filter((f) => f._id !== food._id), food]);
+      setFoods((prev) => prev.filter((f) => f._id !== food._id));
+
+      setMessage("Menu item moved to trash.");
       setTimeout(() => setMessage(""), 3000);
-      await loadMenu();
     } catch (error) {
       setMessage(error.message || 'Unable to remove item.');
     }
   };
 
-  const filteredFoods = foods.filter((food) => {
+  const handleRestore = async (food) => {
+    try {
+      const formattedAddons = (food.addons || []).map((item) => {
+        const name = getAddonName(item);
+        return { name, price: addonPrices[name] || 0 };
+      });
+
+      const payload = {
+        name: food.name,
+        price: Number(food.price),
+        category: food.category || 'Rice',
+        recommended: food.recommended || '',
+        addons: formattedAddons,
+      };
+
+      const restoredItem = await request('/foods', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      const newItem = restoredItem?.food || restoredItem || food;
+
+      setFoods((prev) => [...prev, newItem]);
+      setDeletedFoods((prev) => prev.filter((f) => f._id !== food._id));
+
+      setMessage("Menu item restored successfully.");
+      setTimeout(() => setMessage(""), 3000);
+    } catch (error) {
+      setMessage(error.message || 'Unable to restore item.');
+    }
+  };
+
+  const handlePermanentDelete = (id) => {
+    setDeletedFoods((prev) => prev.filter((f) => f._id !== id));
+    setMessage("Menu item permanently removed from trash.");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  const displayedFoods = activeTab === 'active' ? foods : deletedFoods;
+
+  const filteredFoods = displayedFoods.filter((food) => {
     const query = searchTerm.trim().toLowerCase();
     if (!query) return true;
     return (
@@ -245,10 +308,35 @@ function AdminFoodsPage() {
           </div>
         </form>
 
-        <div className="admin-search-container" style={{ margin: '20px 0' }}>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '25px', marginBottom: '15px' }}>
+          <button
+            type="button"
+            className="admin-btn"
+            style={{
+              backgroundColor: activeTab === 'active' ? '#1f2937' : '#e5e7eb',
+              color: activeTab === 'active' ? '#fff' : '#374151'
+            }}
+            onClick={() => setActiveTab('active')}
+          >
+            Active Menu ({foods.length})
+          </button>
+          <button
+            type="button"
+            className="admin-btn"
+            style={{
+              backgroundColor: activeTab === 'trash' ? '#1f2937' : '#e5e7eb',
+              color: activeTab === 'trash' ? '#fff' : '#374151'
+            }}
+            onClick={() => setActiveTab('trash')}
+          >
+            🗑️ Trash / Deleted ({deletedFoods.length})
+          </button>
+        </div>
+
+        <div className="admin-search-container" style={{ marginBottom: '20px' }}>
           <input
             type="text"
-            placeholder="🔍 Search menu by name or category..."
+            placeholder={`🔍 Search ${activeTab === 'active' ? 'active' : 'deleted'} menu...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -263,40 +351,69 @@ function AdminFoodsPage() {
 
         <div className="food-list">
           {filteredFoods.length === 0 ? (
-            <p style={{ textAlign: 'center', color: '#666' }}>No meals found.</p>
+            <p style={{ textAlign: 'center', color: '#666', padding: '20px 0' }}>
+              {activeTab === 'active' ? 'No active meals found.' : 'Trash is empty.'}
+            </p>
           ) : (
-            filteredFoods.map((food) => (
-              <article key={food._id} className="food-item-card">
-                <div>
-                  <h3>{food.name}</h3>
-                  <p>Category: <strong>{food.category}</strong></p>
-                  {food.addons && food.addons.length > 0 && (
-                    <p style={{ fontSize: '13px', color: '#666' }}>
-                      Add-ons: {food.addons.map(a => typeof a === 'object' ? a.name : a).join(', ')}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <p>Price: ₦{Number(food.price || 0).toLocaleString()}</p>
-                  <div className="food-buttons">
-                    <button
-                      type="button"
-                      className="admin-btn"
-                      onClick={() => handleEdit(food)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="admin-btn-danger"
-                      onClick={() => handleDelete(food._id)}
-                    >
-                      Delete
-                    </button>
+            filteredFoods.map((food) => {
+              const formattedAddonList = (food.addons || [])
+                .map(getAddonName)
+                .filter(Boolean);
+
+              return (
+                <article key={food._id} className="food-item-card">
+                  <div>
+                    <h3>{food.name}</h3>
+                    <p>Category: <strong>{food.category}</strong></p>
+                    {formattedAddonList.length > 0 && (
+                      <p style={{ fontSize: '13px', color: '#666' }}>
+                        Add-ons: {formattedAddonList.join(', ')}
+                      </p>
+                    )}
                   </div>
-                </div>
-              </article>
-            ))
+                  <div>
+                    <p>Price: ₦{Number(food.price || 0).toLocaleString()}</p>
+                    <div className="food-buttons">
+                      {activeTab === 'active' ? (
+                        <>
+                          <button
+                            type="button"
+                            className="admin-btn"
+                            onClick={() => handleEdit(food)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="admin-btn-danger"
+                            onClick={() => handleDelete(food)}
+                          >
+                            Delete
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            className="admin-btn"
+                            onClick={() => handleRestore(food)}
+                          >
+                            Restore 🔄
+                          </button>
+                          <button
+                            type="button"
+                            className="admin-btn-danger"
+                            onClick={() => handlePermanentDelete(food._id)}
+                          >
+                            Delete Permanently ❌
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })
           )}
         </div>
       </section>
