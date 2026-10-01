@@ -322,20 +322,56 @@ function OrderPage() {
                     ) : null}
 
                     <div className="add-to-cart-form">
-                      <label htmlFor={`quantity-${foodId}`}>Qty:</label>
-                      <input
-                        id={`quantity-${foodId}`}
-                        type="number"
-                        min="1"
-                        value={quantity}
-                        onChange={(event) => {
-                          const nextValue = Math.max(1, Number(event.target.value || 1));
-                          setQuantities((current) => ({
-                            ...current,
-                            [foodId]: nextValue,
-                          }));
-                        }}
-                      />
+                      <div className="quantity-control" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label htmlFor={`quantity-${foodId}`}>Qty:</label>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '6px', overflow: 'hidden', background: '#fff' }}>
+                          <button
+                            type="button"
+                            aria-label="Decrease quantity"
+                            onClick={() => {
+                              setQuantities((current) => ({
+                                ...current,
+                                [foodId]: Math.max(1, (current[foodId] || 1) - 1),
+                              }));
+                            }}
+                            style={{
+                              border: 'none',
+                              background: '#f3f4f6',
+                              padding: '6px 12px',
+                              cursor: 'pointer',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              color: '#333'
+                            }}
+                          >
+                            −
+                          </button>
+                          <span style={{ padding: '0 12px', fontWeight: 'bold', minWidth: '28px', textAlign: 'center' }}>
+                            {quantity}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label="Increase quantity"
+                            onClick={() => {
+                              setQuantities((current) => ({
+                                ...current,
+                                [foodId]: (current[foodId] || 1) + 1,
+                              }));
+                            }}
+                            style={{
+                              border: 'none',
+                              background: '#f3f4f6',
+                              padding: '6px 12px',
+                              cursor: 'pointer',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              color: '#333'
+                            }}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
 
                       {canUseAddons ? (
                         <div className="addons-box">
