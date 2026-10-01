@@ -308,28 +308,31 @@ function AdminFoodsPage() {
           </div>
         </form>
 
-        <div style={{ display: 'flex', gap: '10px', marginTop: '25px', marginBottom: '15px' }}>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '25px', marginBottom: '15px' }}>
           <button
             type="button"
             className="admin-btn"
-            style={{
-              backgroundColor: activeTab === 'active' ? '#1f2937' : '#e5e7eb',
-              color: activeTab === 'active' ? '#fff' : '#374151'
-            }}
+            style={
+              activeTab === 'active'
+                ? { backgroundColor: '#ff5722', color: '#fff', border: 'none' }
+                : { opacity: 0.7, backgroundColor: '#f3f4f6', color: '#374151' }
+            }
             onClick={() => setActiveTab('active')}
           >
             Active Menu ({foods.length})
           </button>
+
           <button
             type="button"
             className="admin-btn"
-            style={{
-              backgroundColor: activeTab === 'trash' ? '#1f2937' : '#e5e7eb',
-              color: activeTab === 'trash' ? '#fff' : '#374151'
-            }}
+            style={
+              activeTab === 'trash'
+                ? { backgroundColor: '#ff5722', color: '#fff', border: 'none' }
+                : { opacity: 0.7, backgroundColor: '#f3f4f6', color: '#374151' }
+            }
             onClick={() => setActiveTab('trash')}
           >
-            🗑️ Trash / Deleted ({deletedFoods.length})
+            Deleted ({deletedFoods.length})
           </button>
         </div>
 
@@ -352,7 +355,7 @@ function AdminFoodsPage() {
         <div className="food-list">
           {filteredFoods.length === 0 ? (
             <p style={{ textAlign: 'center', color: '#666', padding: '20px 0' }}>
-              {activeTab === 'active' ? 'No active meals found.' : 'Trash is empty.'}
+              {activeTab === 'active' ? 'No active meals found.' : 'No deleted meals found.'}
             </p>
           ) : (
             filteredFoods.map((food) => {
