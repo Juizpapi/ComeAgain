@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { FaHeadset, FaXmark, FaPaperPlane } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
+import { FaHeadset, FaXmark, FaPaperPlane, FaHouse } from 'react-icons/fa6';
 import { io } from 'socket.io-client';
+import '../styles/ChatWidget.css';
 
 function getChatRoomId(user) {
   if (user?._id) return `user_${user._id}`;
@@ -28,7 +30,7 @@ function ChatWidget({ user }) {
   const senderName = user?.username || 'Guest';
   const senderId = user?._id || user?.id || chatRoom;
 
-  // 1. Load history from server using API_URL
+  // 1. Load history from server
   useEffect(() => {
     const loadHistory = async () => {
       try {
@@ -133,12 +135,18 @@ function ChatWidget({ user }) {
               <h4>💬 Customer Support</h4>
               <p>We typically reply in a few minutes</p>
             </div>
-            <button
-              className="chat-close-btn"
-              onClick={() => setIsOpen(false)}
-            >
-              <FaXmark />
-            </button>
+            <div className="chat-header-actions">
+              <Link to="/" className="chat-home-btn" title="Go to Homepage">
+                <FaHouse />
+              </Link>
+              <button
+                className="chat-close-btn"
+                onClick={() => setIsOpen(false)}
+                title="Close Chat"
+              >
+                <FaXmark />
+              </button>
+            </div>
           </div>
 
           <div className="chat-messages">
