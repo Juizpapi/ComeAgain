@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { FaHeadset, FaXmark, FaPaperPlane, FaHouse } from 'react-icons/fa6';
+import { FaHeadset, FaXmark, FaPaperPlane } from 'react-icons/fa6';
 import { io } from 'socket.io-client';
-import '../styles/ChatWidget.css';
+import "../styles/Chat.css";
 
 function getChatRoomId(user) {
   if (user?._id) return `user_${user._id}`;
@@ -30,7 +29,6 @@ function ChatWidget({ user }) {
   const senderName = user?.username || 'Guest';
   const senderId = user?._id || user?.id || chatRoom;
 
-  // 1. Load history from server
   useEffect(() => {
     const loadHistory = async () => {
       try {
@@ -48,7 +46,6 @@ function ChatWidget({ user }) {
     loadHistory();
   }, [chatRoom]);
 
-  // 2. Setup socket connection
   useEffect(() => {
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
@@ -80,7 +77,6 @@ function ChatWidget({ user }) {
     };
   }, [chatRoom]);
 
-  // Auto-scroll chat box
   useEffect(() => {
     if (isOpen) {
       chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -120,50 +116,47 @@ function ChatWidget({ user }) {
   return (
     <div className="chat-widget-container">
       <button
-        className="floating-chat-btn"
+        className="chat-widget-toggle"
         onClick={() => setIsOpen(!isOpen)}
         title="Chat with Customer Support"
       >
         {isOpen ? <FaXmark /> : <FaHeadset />}
-        {!isOpen && <span className="chat-badge-pulse" />}
+        {!isOpen && <span className="online-dot" />}
       </button>
 
       {isOpen && (
-        <div className="chat-box-popup">
-          <div className="chat-header">
-            <div className="chat-header-info">
-              <h4>💬 Customer Support</h4>
-              <p>We typically reply in a few minutes</p>
+        <div className="chat-widget-box">
+          <div className="chat-widget-header">
+            <div className="chat-widget-header-info">
+              <div>
+                <h3>💬 Customer Support</h3>
+                <span>We typically reply in a few minutes</span>
+              </div>
             </div>
-            <div className="chat-header-actions">
-              <Link to="/" className="chat-home-btn" title="Go to Homepage">
-                <FaHouse />
-              </Link>
-              <button
-                className="chat-close-btn"
-                onClick={() => setIsOpen(false)}
-                title="Close Chat"
-              >
-                <FaXmark />
-              </button>
-            </div>
+            <button
+              className="chat-widget-close"
+              onClick={() => setIsOpen(false)}
+              title="Close Chat"
+            >
+              <FaXmark />
+            </button>
           </div>
 
-          <div className="chat-messages">
+          <div className="chat-widget-messages">
             {messages.length === 0 ? (
-              <div className="chat-welcome-msg">
+              <div className="empty-rooms">
                 👋 Hi {senderName}! How can we help you today?
               </div>
             ) : (
               messages.map((msg, index) => (
                 <div
                   key={msg._id || index}
-                  className={`chat-bubble ${
+                  className={`chat-widget-bubble ${
                     msg.sender === 'user' ? 'user' : 'support'
                   }`}
                 >
-                  <p className="chat-text">{msg.text}</p>
-                  <span className="chat-time">
+                  <p className="chat-text" style={{ margin: 0 }}>{msg.text}</p>
+                  <span className="widget-time">
                     {new Date(msg.createdAt || Date.now()).toLocaleTimeString(
                       [],
                       { hour: '2-digit', minute: '2-digit' }
@@ -175,7 +168,7 @@ function ChatWidget({ user }) {
             <div ref={chatBottomRef} />
           </div>
 
-          <form className="chat-input-area" onSubmit={handleSendMessage}>
+          <form className="chat-widget-input" onSubmit={handleSendMessage}>
             <input
               type="text"
               placeholder="Type your message..."

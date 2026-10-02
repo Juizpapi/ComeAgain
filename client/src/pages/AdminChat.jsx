@@ -1,37 +1,52 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { FaHouse, FaPaperPlane, FaRotateRight, FaUser, FaXmark } from 'react-icons/fa6';
 import { io } from 'socket.io-client';
-import { FaPaperPlane, FaUser, FaComments } from 'react-icons/fa6';
+import "../styles/Chat.css";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const SOCKET_URL = API_URL.replace('/api', '');
 
+const getRoomId = (room) => room?.chatRoom || room?.roomId || room?._id || room?.id;
+
+const checkIsAdmin = (msg) => {
+  if (!msg) return false;
+  const sender = String(msg.sender || '').toLowerCase();
+  const senderName = String(msg.senderName || '').toLowerCase();
+  return (
+    sender === 'admin' ||
+    sender === 'support' ||
+    senderName.includes('admin') ||
+    senderName.includes('support')
+  );
+};
+
 function AdminChat() {
-  const [rooms, setRooms] = useState([]);
+  const [conversations, setConversations] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [replyText, setReplyText] = useState('');
   const [socket, setSocket] = useState(null);
-  const chatEndRef = useRef(null);
+  const chatBottomRef = useRef(null);
 
-  // 1. Fetch active rooms
-  const fetchRooms = async () => {
+  const fetchConversations = async () => {
     try {
-      const response = await fetch(`${API_URL}/chat/rooms`);
-      if (!response.ok) return;
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setRooms(data);
+      const res = await fetch(`${API_URL}/chat/rooms`);
+      if (res.ok) {
+        const data = await res.json();
+        setConversations(data);
       }
-    } catch (error) {
-      console.error('Error fetching chat rooms:', error);
+    } catch (err) {
+      console.error('Error fetching rooms:', err);
     }
   };
 
   useEffect(() => {
-    fetchRooms();
+    fetchConversations();
+    const interval = setInterval(fetchConversations, 10000);
+    return () => clearInterval(interval);
   }, []);
 
-  // 2. Setup socket connection
   useEffect(() => {
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
@@ -39,164 +54,185 @@ function AdminChat() {
     setSocket(newSocket);
 
     newSocket.on('receive_message', (incomingMsg) => {
-      if (selectedRoom && incomingMsg.chatRoom === selectedRoom) {
-        setMessages((prev) => {
-          const exists = prev.some((m) => m._id === incomingMsg._id);
-          return exists ? prev : [...prev, incomingMsg];
-        });
-      }
-      fetchRooms();
+      fetchConversations();
+      const msgRoomId = getRoomId(incomingMsg);
+      setMessages((prev) => {
+        if (msgRoomId === selectedRoom) {
+          const isDup = prev.some((m) => m._id === incomingMsg._id);
+          if (isDup) return prev;
+          return [...prev, incomingMsg];
+        }
+        return prev;
+      });
     });
 
-    return () => {
-      newSocket.disconnect();
-    };
+    return () => newSocket.disconnect();
   }, [selectedRoom]);
 
-  // 3. Load conversation when room is selected
-  const handleSelectRoom = async (roomId) => {
-    setSelectedRoom(roomId);
-    if (socket) {
-      socket.emit('join_room', roomId);
-    }
+  const handleSelectRoom = async (room) => {
+    const roomId = getRoomId(room);
+    if (!roomId) return;
 
+    setSelectedRoom(roomId);
     try {
-      const response = await fetch(`${API_URL}/chat/history/${roomId}`);
-      if (!response.ok) return;
-      const data = await response.json();
-      if (Array.isArray(data)) {
+      const res = await fetch(`${API_URL}/chat/history/${roomId}`);
+      if (res.ok) {
+        const data = await res.json();
         setMessages(data);
       }
-    } catch (error) {
-      console.error('Error fetching history:', error);
+    } catch (err) {
+      console.error('Error fetching room history:', err);
+    }
+
+    if (socket) {
+      socket.emit('join_room', roomId);
     }
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // 4. Send reply
-  const handleSendReply = (e) => {
+  const handleSendMessage = (e) => {
     e.preventDefault();
-    if (!replyText.trim() || !selectedRoom || !socket) return;
+    if (!replyText.trim() || !selectedRoom) return;
 
-    const msgPayload = {
+    const text = replyText.trim();
+    setReplyText('');
+
+    const tempMsg = {
+      _id: `temp_${Date.now()}`,
       chatRoom: selectedRoom,
       sender: 'admin',
       senderName: 'Admin Support',
-      senderId: 'admin',
-      text: replyText.trim(),
+      text,
+      createdAt: new Date().toISOString(),
     };
 
-    socket.emit('send_message', msgPayload);
-    setReplyText('');
+    setMessages((prev) => [...prev, tempMsg]);
+
+    if (socket) {
+      socket.emit('send_message', {
+        chatRoom: selectedRoom,
+        sender: 'admin',
+        senderName: 'Admin Support',
+        text,
+      });
+    }
   };
 
-  return (
-    <div className="legacy-page" style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: '20px', color: '#ff5722' }}>
-        💬 Customer Live Chat Dashboard
-      </h2>
+  const selectedRoomDetails = conversations.find((c) => getRoomId(c) === selectedRoom);
 
-      <div className="admin-chat-layout" style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '20px', height: '600px' }}>
-        {/* Left Sidebar */}
-        <div className="admin-chat-sidebar" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #ddd', overflowY: 'auto' }}>
-          <div style={{ padding: '16px', borderBottom: '1px solid #eee', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>Active Conversations ({rooms.length})</span>
-            <button onClick={fetchRooms} style={{ background: 'none', border: 'none', color: '#ff5722', cursor: 'pointer', fontSize: '12px' }}>
-              🔄 Refresh
-            </button>
+  return (
+    <div className="admin-chat-page">
+      {/* Top Header Bar */}
+      <div className="admin-chat-header">
+        <div className="admin-chat-title">
+          <h2>💬 Customer Live Chat</h2>
+        </div>
+        <div className="admin-chat-actions">
+          <button onClick={fetchConversations} className="btn-refresh" title="Refresh Conversations">
+            <FaRotateRight /> <span>Refresh</span>
+          </button>
+          <Link to="/" className="btn-home" title="Go to Homepage">
+            <FaHouse /> <span>Home</span>
+          </Link>
+        </div>
+      </div>
+
+      <div className={`admin-chat-container ${selectedRoom ? 'has-selected' : ''}`}>
+        {/* Sidebar Conversation List */}
+        <div className="admin-chat-sidebar">
+          <div className="sidebar-header">
+            <h3>Active Conversations ({conversations.length})</h3>
           </div>
-          {rooms.length === 0 ? (
-            <p style={{ padding: '16px', color: '#888', fontSize: '14px' }}>
-              No active customer chats yet. Send a message from the user chat widget to test!
-            </p>
-          ) : (
-            rooms.map((room) => (
-              <div
-                key={room._id}
-                onClick={() => handleSelectRoom(room._id)}
-                style={{
-                  padding: '14px 16px',
-                  borderBottom: '1px solid #eee',
-                  cursor: 'pointer',
-                  backgroundColor: selectedRoom === room._id ? '#fff3e0' : 'transparent',
-                  borderLeft: selectedRoom === room._id ? '4px solid #ff5722' : 'none',
-                  transition: 'background 0.2s',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600', fontSize: '14px' }}>
-                  <FaUser style={{ color: '#ff5722' }} />
-                  <span>{room.lastSender || 'Customer'}</span>
-                </div>
-                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#666', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {room.lastMessage}
-                </p>
-                <span style={{ fontSize: '10px', color: '#a1a1a1' }}>
-                  {new Date(room.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-            ))
-          )}
+          <div className="conversation-list">
+            {conversations.length === 0 ? (
+              <div className="empty-rooms">No active customer chats yet.</div>
+            ) : (
+              conversations.map((room, index) => {
+                const roomId = getRoomId(room);
+                const isActive = Boolean(selectedRoom && selectedRoom === roomId);
+                return (
+                  <div
+                    key={roomId || `room-${index}`}
+                    className={`conversation-item ${isActive ? 'active' : ''}`}
+                    onClick={() => handleSelectRoom(room)}
+                  >
+                    <div className="user-avatar">
+                      <FaUser />
+                    </div>
+                    <div className="user-info">
+                      <h4>{room.senderName || room.userName || 'Customer'}</h4>
+                      <p className="last-msg">{room.lastMessage || 'Click to view messages'}</p>
+                    </div>
+                    {room.updatedAt && (
+                      <span className="msg-time">
+                        {new Date(room.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
 
-        {/* Right Area */}
-        <div className="admin-chat-main" style={{ background: '#fff', borderRadius: '12px', border: '1px solid #ddd', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {/* Main Message Panel */}
+        <div className="admin-chat-main">
           {selectedRoom ? (
             <>
-              <div style={{ padding: '16px', background: '#ff5722', color: '#fff', fontWeight: 'bold' }}>
-                Chatting with: {rooms.find((r) => r._id === selectedRoom)?.lastSender || selectedRoom}
+              <div className="chat-main-header">
+                <div className="chat-user-details">
+                  <h3>{selectedRoomDetails?.senderName || selectedRoomDetails?.userName || 'Customer'}</h3>
+                  <span className="room-id">{selectedRoom}</span>
+                </div>
+                <button
+                  className="btn-close-chat"
+                  onClick={() => setSelectedRoom(null)}
+                  title="Close conversation"
+                  aria-label="Close conversation"
+                >
+                  <FaXmark />
+                </button>
               </div>
 
-              <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', background: '#f9f9f9' }}>
-                {messages.map((msg, idx) => (
-                  <div
-                    key={msg._id || idx}
-                    style={{
-                      alignSelf: msg.sender === 'admin' ? 'flex-end' : 'flex-start',
-                      backgroundColor: msg.sender === 'admin' ? '#ff5722' : '#ffffff',
-                      color: msg.sender === 'admin' ? '#ffffff' : '#333333',
-                      padding: '10px 14px',
-                      borderRadius: '12px',
-                      maxWidth: '70%',
-                      border: msg.sender === 'admin' ? 'none' : '1px solid #e0e0e0',
-                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-                    }}
-                  >
-                    <div style={{ fontSize: '11px', opacity: 0.8, marginBottom: '2px' }}>
-                      {msg.senderName}
+              <div className="admin-chat-messages">
+                {messages.map((msg, index) => {
+                  const isAdmin = checkIsAdmin(msg);
+                  return (
+                    <div
+                      key={msg._id || msg.id || `msg-${index}`}
+                      className={`chat-bubble ${isAdmin ? 'admin' : 'customer'}`}
+                    >
+                      <span className="sender-label">
+                        {isAdmin ? 'You (Support)' : msg.senderName || 'Customer'}
+                      </span>
+                      <p className="chat-text">{msg.text}</p>
+                      <span className="chat-time">
+                        {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
-                    <p style={{ margin: 0, fontSize: '14px' }}>{msg.text}</p>
-                    <span style={{ fontSize: '10px', opacity: 0.7, display: 'block', textAlign: 'right', marginTop: '4px' }}>
-                      {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                ))}
-                <div ref={chatEndRef} />
+                  );
+                })}
+                <div ref={chatBottomRef} />
               </div>
 
-              <form onSubmit={handleSendReply} style={{ display: 'flex', padding: '12px', borderTop: '1px solid #eee', background: '#fff' }}>
+              <form className="admin-chat-input" onSubmit={handleSendMessage}>
                 <input
                   type="text"
-                  placeholder="Type your reply to customer..."
+                  placeholder="Type your reply..."
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  style={{ flex: 1, padding: '10px 14px', border: '1px solid #ccc', borderRadius: '20px', outline: 'none', marginRight: '8px' }}
                 />
-                <button
-                  type="submit"
-                  disabled={!replyText.trim()}
-                  style={{ backgroundColor: '#ff5722', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <FaPaperPlane /> Send
+                <button type="submit" disabled={!replyText.trim()}>
+                  <FaPaperPlane /> <span>Send</span>
                 </button>
               </form>
             </>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#888' }}>
-              <FaComments style={{ fontSize: '48px', color: '#ddd', marginBottom: '12px' }} />
-              <p>Select a customer conversation from the left to start replying.</p>
+            <div className="no-room-selected">
+              <p>👈 Select a customer conversation from the list to reply.</p>
             </div>
           )}
         </div>
