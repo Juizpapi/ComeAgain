@@ -29,6 +29,12 @@ function AdminChat() {
   const [socket, setSocket] = useState(null);
   const chatBottomRef = useRef(null);
 
+  // Keep a ref of selectedRoom so socket listeners always read the latest value
+  const selectedRoomRef = useRef(selectedRoom);
+  useEffect(() => {
+    selectedRoomRef.current = selectedRoom;
+  }, [selectedRoom]);
+
   const fetchConversations = async () => {
     try {
       const res = await fetch(`${API_URL}/chat/rooms`);
@@ -41,12 +47,14 @@ function AdminChat() {
     }
   };
 
+  // Poll conversation list periodically
   useEffect(() => {
     fetchConversations();
     const interval = setInterval(fetchConversations, 10000);
     return () => clearInterval(interval);
   }, []);
 
+  // Initialize single Socket connection on mount
   useEffect(() => {
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
@@ -56,18 +64,33 @@ function AdminChat() {
     newSocket.on('receive_message', (incomingMsg) => {
       fetchConversations();
       const msgRoomId = getRoomId(incomingMsg);
-      setMessages((prev) => {
-        if (msgRoomId === selectedRoom) {
-          const isDup = prev.some((m) => m._id === incomingMsg._id);
+
+      if (msgRoomId === selectedRoomRef.current) {
+        setMessages((prev) => {
+          const isDup = prev.some(
+            (m) =>
+              m._id === incomingMsg._id ||
+              (m.text === incomingMsg.text &&
+                (m.sender === incomingMsg.sender || m.senderName === incomingMsg.senderName) &&
+                Math.abs(new Date(m.createdAt || Date.now()) - new Date(incomingMsg.createdAt || Date.now())) < 5000)
+          );
           if (isDup) return prev;
           return [...prev, incomingMsg];
-        }
-        return prev;
-      });
+        });
+      }
     });
 
-    return () => newSocket.disconnect();
-  }, [selectedRoom]);
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  // Join room whenever selectedRoom or socket instance updates
+  useEffect(() => {
+    if (socket && selectedRoom) {
+      socket.emit('join_room', selectedRoom);
+    }
+  }, [selectedRoom, socket]);
 
   const handleSelectRoom = async (room) => {
     const roomId = getRoomId(room);
@@ -83,15 +106,12 @@ function AdminChat() {
     } catch (err) {
       console.error('Error fetching room history:', err);
     }
-
-    if (socket) {
-      socket.emit('join_room', roomId);
-    }
   };
 
+  // Auto-scroll when messages update or room switches
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, selectedRoom]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
