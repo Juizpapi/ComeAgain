@@ -3097,7 +3097,7 @@ display: grid;
     scroll-snap-align: center;
     box-sizing: border-box !important;
   }
-  }
+  
 
   /* Mobile View: 2 columns per row */
 @media (max-width: 768px) {
