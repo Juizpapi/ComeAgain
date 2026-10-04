@@ -64,6 +64,9 @@ function HomePage() {
       const token = localStorage.getItem('comeagain_token');
       if (!user || !token) return;
 
+      // Do not show popup if already dismissed or actioned in this login session
+      if (localStorage.getItem('dismissed_review_popup') === 'true') return;
+
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/my-orders`, {
           headers: {
@@ -75,14 +78,12 @@ function HomePage() {
         const orders = await response.json();
 
         if (Array.isArray(orders)) {
-          const dismissedId = sessionStorage.getItem('dismissed_review_popup_order');
-
-          // Find a delivered order that hasn't been reviewed & wasn't dismissed this session
+          // Find a delivered order that hasn't been reviewed
           const pendingReview = orders.find((ord) => {
             const statusStr = (ord.status || ord.orderStatus || '').toLowerCase();
             const isDelivered = statusStr === 'delivered' || statusStr === 'completed';
             const notReviewed = !ord.isReviewed;
-            return isDelivered && notReviewed && ord._id !== dismissedId;
+            return isDelivered && notReviewed;
           });
 
           if (pendingReview) {
@@ -274,6 +275,7 @@ function HomePage() {
                         localStorage.removeItem("comeagain_token");
                         localStorage.removeItem("comeagain_cart");
                         localStorage.removeItem("comeagain_checkout_location");
+                        localStorage.removeItem("dismissed_review_popup");
                         window.location.href = "/";
                       }}
                     >
@@ -647,7 +649,7 @@ function HomePage() {
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 onClick={() => {
-                  sessionStorage.setItem('dismissed_review_popup_order', unreviewedOrder._id);
+                  localStorage.setItem('dismissed_review_popup', 'true');
                   setShowReviewPopup(false);
                 }}
                 style={{
@@ -667,7 +669,10 @@ function HomePage() {
 
               <Link
                 to="/order-history"
-                onClick={() => setShowReviewPopup(false)}
+                onClick={() => {
+                  localStorage.setItem('dismissed_review_popup', 'true');
+                  setShowReviewPopup(false);
+                }}
                 style={{
                   padding: '12px 18px',
                   borderRadius: '8px',
