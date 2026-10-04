@@ -3086,6 +3086,52 @@ display: grid;
   }
 }
 
+/* Mobile View: 2 columns per row */
+@media (max-width: 768px) {
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+
+/* Mobile View: 2-Column Grid matching Feature Cards */
+@media (max-width: 768px) {
+  .why-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+
+  .why-box {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    padding: 16px 10px !important;
+    text-align: center;
+  }
+
+  .why-box .feature-icon {
+    margin-bottom: 8px !important;
+  }
+
+  .why-box h3 {
+    font-size: 14px !important;
+    margin: 6px 0 4px 0 !important;
+  }
+
+  .why-box p {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+  }
+}
+
 /* Floating Chat Container */
 .chat-widget-container {
   position: fixed;

@@ -360,30 +360,30 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="why-us">
+<section className="why-us">
         <h2>Why Choose Come Again Restaurant?</h2>
 
         <div className="why-grid">
           <div className="why-box">
-            🍽️
+            <div className="feature-icon">🥗</div>
             <h3>Fresh Ingredients</h3>
             <p>Every meal is prepared fresh using carefully selected ingredients.</p>
           </div>
 
           <div className="why-box">
-            🚚
+            <div className="feature-icon">🚚</div>
             <h3>Fast Delivery</h3>
             <p>We deliver hot meals quickly across Lagos.</p>
           </div>
 
           <div className="why-box">
-            👨‍🍳
+            <div className="feature-icon">👨‍🍳</div>
             <h3>Experienced Chefs</h3>
             <p>Delicious Nigerian meals cooked by experienced chefs.</p>
           </div>
 
           <div className="why-box">
-            💳
+            <div className="feature-icon">💳</div>
             <h3>Easy Payment</h3>
             <p>Pay online with Paystack or choose Cash on Delivery.</p>
           </div>
