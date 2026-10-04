@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaXTwitter, FaPhone, FaEnvelope, FaHeadset } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaXTwitter, FaPhone, FaEnvelope } from "react-icons/fa6";
 import ChatWidget from '../components/ChatWidget';
 
 const slides = [
@@ -35,6 +35,11 @@ function HomePage() {
   const [showProfile, setShowProfile] = useState(false);
   const [homepageReviews, setHomepageReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
+  
+  // Unreviewed delivered order popup state
+  const [unreviewedOrder, setUnreviewedOrder] = useState(null);
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
+
   const profileRef = useRef(null);
 
   useEffect(() => {
@@ -52,6 +57,46 @@ function HomePage() {
 
   const user = getStoredUser();
   const isAdmin = user?.role === 'admin' || user?.username === 'admin';
+
+  // Check for delivered orders that have not been reviewed yet
+  useEffect(() => {
+    const checkUnreviewedDeliveredOrders = async () => {
+      const token = localStorage.getItem('comeagain_token');
+      if (!user || !token) return;
+
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/my-orders`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) return;
+        const orders = await response.json();
+
+        if (Array.isArray(orders)) {
+          const dismissedId = sessionStorage.getItem('dismissed_review_popup_order');
+
+          // Find a delivered order that hasn't been reviewed & wasn't dismissed this session
+          const pendingReview = orders.find((ord) => {
+            const statusStr = (ord.status || ord.orderStatus || '').toLowerCase();
+            const isDelivered = statusStr === 'delivered' || statusStr === 'completed';
+            const notReviewed = !ord.isReviewed;
+            return isDelivered && notReviewed && ord._id !== dismissedId;
+          });
+
+          if (pendingReview) {
+            setUnreviewedOrder(pendingReview);
+            setShowReviewPopup(true);
+          }
+        }
+      } catch (err) {
+        console.error('Error checking unreviewed orders:', err);
+      }
+    };
+
+    checkUnreviewedDeliveredOrders();
+  }, []);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -360,7 +405,7 @@ function HomePage() {
         </div>
       </section>
 
-<section className="why-us">
+      <section className="why-us">
         <h2>Why Choose Come Again Restaurant?</h2>
 
         <div className="why-grid">
@@ -390,7 +435,7 @@ function HomePage() {
         </div>
       </section>
 
- <section className="reviews-section">
+      <section className="reviews-section">
         <h2>What Our Customers Say</h2>
 
         <div className="reviews-container">
@@ -400,7 +445,6 @@ function HomePage() {
             <p>No customer reviews yet.</p>
           ) : (
             homepageReviews.map((review) => {
-              // Format avatar URL for local backend uploads & external links
               const avatarSrc = review.user?.avatar
                 ? review.user.avatar.startsWith("http")
                   ? review.user.avatar
@@ -544,8 +588,107 @@ function HomePage() {
         <p>Our Food is Sensational... Come Again Soon.</p>
         <small>© 2026 Come Again Restaurant. All Rights Reserved.</small>
       </footer>
+
+      {/* Delivered Order Unreviewed Pop-up Modal */}
+      {showReviewPopup && unreviewedOrder && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.65)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '20px',
+          backdropFilter: 'blur(4px)'
+        }}>
+          <div style={{
+            backgroundColor: '#ffffff',
+            borderRadius: '16px',
+            maxWidth: '420px',
+            width: '100%',
+            padding: '28px 24px',
+            textAlign: 'center',
+            boxShadow: '0 12px 32px rgba(0,0,0,0.25)',
+            position: 'relative'
+          }}>
+            <div style={{ fontSize: '42px', marginBottom: '12px' }}>🍲</div>
+            <h2 style={{ margin: '0 0 8px 0', fontSize: '22px', color: '#222', fontWeight: '700' }}>
+              How was your meal?
+            </h2>
+            <p style={{ color: '#666', fontSize: '14px', margin: '0 0 16px 0', lineHeight: '1.5' }}>
+              Your order <strong>#{unreviewedOrder._id?.substring(0, 8)}</strong> has been delivered! We’d love to hear your thoughts on your food.
+            </p>
+
+            {/* List ordered items if available */}
+            {unreviewedOrder.items && unreviewedOrder.items.length > 0 && (
+              <div style={{
+                backgroundColor: '#f8f9fa',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                marginBottom: '20px',
+                fontSize: '13px',
+                color: '#444',
+                maxHeight: '90px',
+                overflowY: 'auto',
+                border: '1px solid #eee'
+              }}>
+                {unreviewedOrder.items.map((item, idx) => (
+                  <div key={idx} style={{ margin: '4px 0', fontWeight: '500' }}>
+                    • {item.food?.name || item.name || 'Delicious Dish'} (x{item.quantity})
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={() => {
+                  sessionStorage.setItem('dismissed_review_popup_order', unreviewedOrder._id);
+                  setShowReviewPopup(false);
+                }}
+                style={{
+                  padding: '12px 18px',
+                  borderRadius: '8px',
+                  border: '1px solid #ddd',
+                  backgroundColor: '#f5f5f5',
+                  color: '#666',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  flex: 1
+                }}
+              >
+                Maybe Later
+              </button>
+
+              <Link
+                to="/order-history"
+                onClick={() => setShowReviewPopup(false)}
+                style={{
+                  padding: '12px 18px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: '#ff5722',
+                  color: '#ffffff',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  textDecoration: 'none',
+                  flex: 1,
+                  display: 'inline-block'
+                }}
+              >
+                Leave Review ⭐
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
       
-{/* Floating Live Chat Widget */}
+      {/* Floating Live Chat Widget */}
       <ChatWidget user={user} />
     </div>
   );
