@@ -58,14 +58,11 @@ function HomePage() {
   const user = getStoredUser();
   const isAdmin = user?.role === 'admin' || user?.username === 'admin';
 
-  // Check for delivered orders that have not been reviewed yet
+  // Check for delivered orders that have not been reviewed or dismissed yet
   useEffect(() => {
     const checkUnreviewedDeliveredOrders = async () => {
       const token = localStorage.getItem('comeagain_token');
       if (!user || !token) return;
-
-      // Do not show popup if already dismissed or actioned in this login session
-      if (localStorage.getItem('dismissed_review_popup') === 'true') return;
 
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/orders/my-orders`, {
@@ -78,12 +75,21 @@ function HomePage() {
         const orders = await response.json();
 
         if (Array.isArray(orders)) {
-          // Find a delivered order that hasn't been reviewed
+          // Retrieve list of order IDs already dismissed by the user
+          let dismissedOrderIds = [];
+          try {
+            dismissedOrderIds = JSON.parse(localStorage.getItem('dismissed_review_order_ids') || '[]');
+          } catch {
+            dismissedOrderIds = [];
+          }
+
+          // Find a delivered order that hasn't been reviewed AND hasn't been dismissed yet
           const pendingReview = orders.find((ord) => {
             const statusStr = (ord.status || ord.orderStatus || '').toLowerCase();
             const isDelivered = statusStr === 'delivered' || statusStr === 'completed';
             const notReviewed = !ord.isReviewed;
-            return isDelivered && notReviewed;
+            const notDismissed = !dismissedOrderIds.includes(ord._id);
+            return isDelivered && notReviewed && notDismissed;
           });
 
           if (pendingReview) {
@@ -98,6 +104,21 @@ function HomePage() {
 
     checkUnreviewedDeliveredOrders();
   }, []);
+
+  const dismissReviewPopup = (orderId) => {
+    if (orderId) {
+      try {
+        const existing = JSON.parse(localStorage.getItem('dismissed_review_order_ids') || '[]');
+        if (!existing.includes(orderId)) {
+          existing.push(orderId);
+          localStorage.setItem('dismissed_review_order_ids', JSON.stringify(existing));
+        }
+      } catch (err) {
+        console.error('Failed to save dismissed order ID:', err);
+      }
+    }
+    setShowReviewPopup(false);
+  };
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -284,7 +305,6 @@ function HomePage() {
                         localStorage.removeItem("comeagain_token");
                         localStorage.removeItem("comeagain_cart");
                         localStorage.removeItem("comeagain_checkout_location");
-                        localStorage.removeItem("dismissed_review_popup");
                         window.location.href = "/";
                       }}
                     >
@@ -657,10 +677,7 @@ function HomePage() {
 
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
-                onClick={() => {
-                  localStorage.setItem('dismissed_review_popup', 'true');
-                  setShowReviewPopup(false);
-                }}
+                onClick={() => dismissReviewPopup(unreviewedOrder._id)}
                 style={{
                   padding: '12px 18px',
                   borderRadius: '8px',
@@ -678,10 +695,7 @@ function HomePage() {
 
               <Link
                 to="/order-history"
-                onClick={() => {
-                  localStorage.setItem('dismissed_review_popup', 'true');
-                  setShowReviewPopup(false);
-                }}
+                onClick={() => dismissReviewPopup(unreviewedOrder._id)}
                 style={{
                   padding: '12px 18px',
                   borderRadius: '8px',
