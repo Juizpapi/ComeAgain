@@ -390,7 +390,7 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="reviews-section">
+ <section className="reviews-section">
         <h2>What Our Customers Say</h2>
 
         <div className="reviews-container">
@@ -399,37 +399,46 @@ function HomePage() {
           ) : homepageReviews.length === 0 ? (
             <p>No customer reviews yet.</p>
           ) : (
-            homepageReviews.map((review) => (
-              <div className="review-card" key={review._id}>
-                {review.user?.avatar ? (
-                  <img
-                    src={review.user.avatar}
-                    alt={review.user.username}
-                    className="customer-review-avatar"
-                  />
-                ) : (
-                  <div className="customer-review-letter">
-                    {review.user?.username?.charAt(0).toUpperCase()}
+            homepageReviews.map((review) => {
+              // Format avatar URL for local backend uploads & external links
+              const avatarSrc = review.user?.avatar
+                ? review.user.avatar.startsWith("http")
+                  ? review.user.avatar
+                  : `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${review.user.avatar.replace(/^\/?(uploads\/)?/, '')}`
+                : null;
+
+              return (
+                <div className="review-card" key={review._id}>
+                  {avatarSrc ? (
+                    <img
+                      src={avatarSrc}
+                      alt={review.user?.username || "Customer"}
+                      className="customer-review-avatar"
+                    />
+                  ) : (
+                    <div className="customer-review-letter">
+                      {review.user?.username?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                  )}
+
+                  <div className="stars">
+                    {"⭐".repeat(review.rating)}
                   </div>
-                )}
 
-                <div className="stars">
-                  {"⭐".repeat(review.rating)}
+                  <p>"{review.comment}"</p>
+
+                  <h4>- {review.user?.username}</h4>
+
+                  <p className="review-food-name">
+                    Ordered: {review.food?.name}
+                  </p>
+
+                  <p className="review-date">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
-
-                <p>"{review.comment}"</p>
-
-                <h4>- {review.user?.username}</h4>
-
-                <p className="review-food-name">
-                  Ordered: {review.food?.name}
-                </p>
-
-                <p className="review-date">
-                  {new Date(review.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </section>
