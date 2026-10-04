@@ -14,7 +14,11 @@ function FavoritesPage() {
     const loadFavorites = async () => {
       try {
         const data = await request("/favorites");
-        setFavorites(data);
+        // Filter out any favorites whose food document has been deleted/null
+        const validFavorites = (Array.isArray(data) ? data : []).filter(
+          (item) => item && item.food
+        );
+        setFavorites(validFavorites);
       } catch (err) {
         console.error(err);
       } finally {
@@ -54,30 +58,26 @@ function FavoritesPage() {
   }, []);
 
   const addToCart = (food) => {
+    if (!food || !food._id) return;
 
-    const cart =
-      JSON.parse(localStorage.getItem("comeagain_cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem("comeagain_cart") || "[]");
 
     const existing = cart.find(
       (item) => item.id === food._id
     );
 
     if (existing) {
-
       existing.quantity += 1;
-
     } else {
-
-cart.push({
-  food: food._id,
-  foodId: food._id,
-  id: food._id,
-  name: food.name,
-  price: Number(food.price),
-  quantity: 1,
-  addons: [],
-});
-
+      cart.push({
+        food: food._id,
+        foodId: food._id,
+        id: food._id,
+        name: food.name,
+        price: Number(food.price),
+        quantity: 1,
+        addons: [],
+      });
     }
 
     localStorage.setItem(
@@ -94,21 +94,18 @@ cart.push({
     setTimeout(() => {
       setCartToast("");
     }, 2000);
-
   };
 
   const removeFavorite = async (foodId) => {
     try {
-
       const data = await request(`/favorites/${foodId}`, {
         method: "POST",
       });
 
       if (!data.favorited) {
-
         setFavorites((current) =>
           current.filter(
-            (item) => item.food._id !== foodId
+            (item) => item.food && item.food._id !== foodId
           )
         );
 
@@ -117,25 +114,21 @@ cart.push({
         setTimeout(() => {
           setFavoriteToast("");
         }, 2000);
-
       }
-
     } catch (error) {
-
       console.error(error);
-
     }
   };
+
+  const validFavorites = favorites.filter((fav) => fav && fav.food);
 
   return (
     <div className="favorites-page">
 
       <div className="favorites-topbar">
-
         <h1>❤️ My Favorites</h1>
 
         <div className="favorites-nav">
-
           <Link
             to="/order"
             className="favorites-nav-btn"
@@ -149,28 +142,24 @@ cart.push({
           >
             🛒 Cart ({cartCount})
           </Link>
-
         </div>
-
       </div>
 
       {loading ? (
         <p>Loading...</p>
-      ) : favorites.length === 0 ? (
+      ) : validFavorites.length === 0 ? (
         <p>You haven't added any favorite meals yet.</p>
       ) : (
         <div className="favorites-list">
-
-          {favorites.map((favorite) => (
+          {validFavorites.map((favorite) => (
             <div
-              key={favorite.food._id}
+              key={favorite._id || favorite.food._id}
               className="favorites-card"
             >
-
               <h2>{favorite.food.name}</h2>
 
               <p className="favorites-price">
-                ₦{Number(favorite.food.price).toLocaleString()}
+                ₦{Number(favorite.food.price || 0).toLocaleString()}
               </p>
 
               <p className="favorites-category">
@@ -184,7 +173,6 @@ cart.push({
               )}
 
               <div className="favorites-card-buttons">
-
                 <button
                   className="favorites-cart-btn"
                   onClick={() => addToCart(favorite.food)}
@@ -198,12 +186,9 @@ cart.push({
                 >
                   ❤️ Remove
                 </button>
-
               </div>
-
             </div>
           ))}
-
         </div>
       )}
 

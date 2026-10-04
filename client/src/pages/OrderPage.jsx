@@ -100,7 +100,12 @@ function OrderPage() {
     if (user) {
       request("/favorites")
         .then((data) => {
-          setFavorites(data.map((favorite) => favorite.food._id || favorite.food.id));
+          if (Array.isArray(data)) {
+            const validFavIds = data
+              .filter((favorite) => favorite && favorite.food)
+              .map((favorite) => favorite.food._id || favorite.food.id);
+            setFavorites(validFavIds);
+          }
         })
         .catch(console.error);
     }

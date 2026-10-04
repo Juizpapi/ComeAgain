@@ -49,6 +49,11 @@ const foodSchema = new mongoose.Schema(
       default: true,
     },
 
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+
     image: {
       type: String,
       default: "",
