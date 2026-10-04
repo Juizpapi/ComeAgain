@@ -3023,14 +3023,35 @@ display: grid;
    MOBILE RESPONSIVE FIXES (DAY 2 COMMITS)
 ========================================== */
 @media (max-width: 768px) {
-
-  /* Commit #1: Profile Dropdown Scroll & Max Height */
-  .ca-dropdown {
-    max-height: 70vh !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
+  /* Parent container relative reset */
+  .ca-profile-menu {
+    position: static; /* Allows fixed positioning relative to screen viewport */
   }
 
+  /* Fixed Mobile Dropdown */
+  .ca-dropdown {
+    position: fixed !important;
+    top: 65px !important;            /* Fits right below the sticky header */
+    right: 16px !important;
+    left: 16px !important;           /* Spans mobile screen nicely with side margins */
+    width: auto !important;
+    max-height: 75vh !important;      /* Fits comfortably within view */
+    overflow-y: auto !important;     /* Enables internal scrolling for all admin links */
+    -webkit-overflow-scrolling: touch;
+    z-index: 99999 !important;       /* Displays above all other sections */
+    padding-bottom: 24px !important;  /* Space at the bottom so Logout is easy to tap */
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Ensure items are easy to tap on mobile */
+  .ca-dropdown .ca-item {
+    padding: 12px 16px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+  }
+}
 /* Commit #5: Horizontal Swipe for Customer Reviews */
   .reviews-container {
     display: flex !important;
@@ -3086,14 +3107,7 @@ display: grid;
   }
 }
 
-/* Mobile View: 2 columns per row */
-@media (max-width: 768px) {
-  .why-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-}
+
 
 
 /* Mobile View: 2-Column Grid matching Feature Cards */
