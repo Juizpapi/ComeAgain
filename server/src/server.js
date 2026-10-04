@@ -49,8 +49,6 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/chat", chatRoutes);
 
-
-
 app.get("/", (req, res) => {
   res.json({
     message: "Come Again Restaurant API is running 🚀",
@@ -78,7 +76,7 @@ io.on("connection", (socket) => {
     const { chatRoom, sender, senderName, senderId, text } = data;
 
     try {
-      // 1. Save message to Message collection
+      // 1. Save user's message to Message collection
       const newMessage = await Message.create({
         chatRoom,
         sender,
@@ -87,11 +85,41 @@ io.on("connection", (socket) => {
         text,
       });
 
-      // 2. Send message to everyone inside this room
+      // 2. Send user's message to everyone inside this room
       io.to(chatRoom).emit("receive_message", newMessage);
 
       // 3. Global broadcast so Admin Panel refreshes its active room list instantly
       io.emit("receive_message", newMessage);
+
+      // 4. AUTOMATIC REPLY LOGIC
+      if (sender === "user") {
+        // Check if support/admin has already responded in this room
+        const existingAdminReply = await Message.findOne({
+          chatRoom,
+          sender: "admin",
+        });
+
+        // Send auto-reply only if support hasn't replied to this chat yet
+        if (!existingAdminReply) {
+          setTimeout(async () => {
+            try {
+              const autoReply = await Message.create({
+                chatRoom,
+                sender: "admin",
+                senderName: "Support Bot",
+                senderId: null,
+                text: "Thanks for reaching out! 👋 We have received your message and will reply shortly.",
+              });
+
+              // Send auto-reply to room and update Admin Panel
+              io.to(chatRoom).emit("receive_message", autoReply);
+              io.emit("receive_message", autoReply);
+            } catch (autoErr) {
+              console.error("Error creating auto-reply:", autoErr);
+            }
+          }, 1000);
+        }
+      }
     } catch (error) {
       console.error("Error saving chat message:", error);
     }
