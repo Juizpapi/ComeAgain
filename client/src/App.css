@@ -3028,22 +3028,43 @@ display: grid;
     position: static; /* Allows fixed positioning relative to screen viewport */
   }
 
-  /* Fixed Mobile Dropdown */
-  .ca-dropdown {
-    position: fixed !important;
-    top: 65px !important;            /* Fits right below the sticky header */
-    right: 16px !important;
-    left: 16px !important;           /* Spans mobile screen nicely with side margins */
-    width: auto !important;
-    max-height: 75vh !important;      /* Fits comfortably within view */
-    overflow-y: auto !important;     /* Enables internal scrolling for all admin links */
-    -webkit-overflow-scrolling: touch;
-    z-index: 99999 !important;       /* Displays above all other sections */
-    padding-bottom: 24px !important;  /* Space at the bottom so Logout is easy to tap */
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-  }
+ /* Fixed Mobile Dropdown */
+.ca-dropdown {
+  position: fixed !important;
+  top: 65px !important;            /* Fits right below the sticky header */
+  right: 16px !important;
+  left: 16px !important;           /* Spans mobile screen nicely with side margins */
+  width: auto !important;
+  max-height: 75vh !important;      /* Fits comfortably within view */
+  overflow-y: auto !important;     /* Enables internal scrolling for all admin links */
+  -webkit-overflow-scrolling: touch;
+  z-index: 99999 !important;       /* Displays above all other sections */
+  padding-top: 38px !important;    /* Space for top-right 'X' button */
+  padding-bottom: 24px !important;  /* Space at the bottom so Logout is easy to tap */
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
 
+/* Close 'X' Button styling */
+.ca-dropdown-close {
+  position: absolute !important;
+  top: 10px !important;
+  right: 14px !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 22px !important;
+  font-weight: bold !important;
+  color: #ff6b00 !important;      /* Page theme orange */
+  cursor: pointer !important;
+  padding: 4px 8px !important;
+  line-height: 1 !important;
+  z-index: 100000 !important;
+}
+
+.ca-dropdown-close:hover {
+  color: #e55322 !important;
+  transform: scale(1.1);
+}
   /* Ensure items are easy to tap on mobile */
   .ca-dropdown .ca-item {
     padding: 12px 16px;

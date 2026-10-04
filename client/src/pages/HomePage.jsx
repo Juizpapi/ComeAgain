@@ -218,6 +218,15 @@ function HomePage() {
 
                 {showProfile && (
                   <div className="ca-dropdown">
+                    <button
+                      type="button"
+                      className="ca-dropdown-close"
+                      onClick={() => setShowProfile(false)}
+                      aria-label="Close menu"
+                    >
+                      ✕
+                    </button>
+
                     <div className="ca-user-info">
                       <div className="ca-avatar large">
                         {user.avatar ? (
