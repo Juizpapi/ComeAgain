@@ -2993,30 +2993,19 @@ display: grid;
 }
 
 
-@media(max-width:400px){
+@media (max-width: 400px) {
+  .ca-dropdown {
+    right: -20px;
+    width: 270px;
+  }
 
-.ca-dropdown{
+  .ca-profile-btn span {
+    display: none;
+  }
 
-    right:-20px;
-
-    width:270px;
-
-}
-
-
-.ca-profile-btn span{
-
-    display:none;
-
-}
-
-
-.ca-profile-btn{
-
-    padding:10px;
-
-}
-
+  .ca-profile-btn {
+    padding: 10px;
+  }
 }
 
 /* ==========================================
@@ -3025,59 +3014,59 @@ display: grid;
 @media (max-width: 768px) {
   /* Parent container relative reset */
   .ca-profile-menu {
-    position: static; /* Allows fixed positioning relative to screen viewport */
+    position: static;
   }
 
- /* Fixed Mobile Dropdown */
-.ca-dropdown {
-  position: fixed !important;
-  top: 65px !important;            /* Fits right below the sticky header */
-  right: 16px !important;
-  left: 16px !important;           /* Spans mobile screen nicely with side margins */
-  width: auto !important;
-  max-height: 75vh !important;      /* Fits comfortably within view */
-  overflow-y: auto !important;     /* Enables internal scrolling for all admin links */
-  -webkit-overflow-scrolling: touch;
-  z-index: 99999 !important;       /* Displays above all other sections */
-  padding-top: 38px !important;    /* Space for top-right 'X' button */
-  padding-bottom: 24px !important;  /* Space at the bottom so Logout is easy to tap */
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-}
+  /* Fixed Mobile Dropdown */
+  .ca-dropdown {
+    position: fixed !important;
+    top: 65px !important;
+    right: 16px !important;
+    left: 16px !important;
+    width: auto !important;
+    max-height: 75vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    z-index: 99999 !important;
+    padding-top: 38px !important;
+    padding-bottom: 24px !important;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  }
 
-/* Close 'X' Button styling */
-.ca-dropdown-close {
-  position: absolute !important;
-  top: 10px !important;
-  right: 14px !important;
-  background: transparent !important;
-  border: none !important;
-  font-size: 22px !important;
-  font-weight: bold !important;
-  color: #ff6b00 !important;      /* Page theme orange */
-  cursor: pointer !important;
-  padding: 4px 8px !important;
-  line-height: 1 !important;
-  z-index: 100000 !important;
-}
+  /* Close 'X' Button styling */
+  .ca-dropdown-close {
+    position: absolute !important;
+    top: 10px !important;
+    right: 14px !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 22px !important;
+    font-weight: bold !important;
+    color: #ff6b00 !important;
+    cursor: pointer !important;
+    padding: 4px 8px !important;
+    line-height: 1 !important;
+    z-index: 100000 !important;
+  }
 
-.ca-dropdown-close:hover {
-  color: #e55322 !important;
-  transform: scale(1.1);
-}
-  /* Ensure items are easy to tap on mobile */
+  .ca-dropdown-close:hover {
+    color: #e55322 !important;
+    transform: scale(1.1);
+  }
+
   .ca-dropdown .ca-item {
     padding: 12px 16px;
     font-size: 15px;
     display: flex;
     align-items: center;
   }
-}
-/* Commit #5: Horizontal Swipe for Customer Reviews */
+
+  /* Commit #5: Horizontal Swipe for Customer Reviews (Mobile Only) */
   .reviews-container {
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: nowrap !important; /* Prevents cards from wrapping onto new lines */
+    flex-wrap: nowrap !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory;
@@ -3089,18 +3078,18 @@ display: grid;
   }
 
   .review-card {
-    flex: 0 0 85% !important; /* Prevents cards from shrinking */
+    flex: 0 0 85% !important;
     min-width: 85% !important;
     max-width: 85% !important;
     scroll-snap-align: center;
     box-sizing: border-box !important;
   }
 
-  /* Commit #6: Horizontal Swipe for Popular Dishes */
+  /* Commit #6: Horizontal Swipe for Popular Dishes (Mobile Only) */
   .food-gallery {
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: nowrap !important; /* Forces items onto a single horizontal line */
+    flex-wrap: nowrap !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
     scroll-snap-type: x mandatory;
@@ -3112,27 +3101,20 @@ display: grid;
   }
 
   .food-item {
-    flex: 0 0 80% !important; /* Keeps dish cards wide while leaving a peek of the next card */
+    flex: 0 0 80% !important;
     min-width: 80% !important;
     max-width: 80% !important;
     scroll-snap-align: center;
     box-sizing: border-box !important;
   }
-  
 
   /* Mobile View: 2 columns per row */
-@media (max-width: 768px) {
   .features-section {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-}
 
-
-
-
-/* Mobile View: 2-Column Grid matching Feature Cards */
-@media (max-width: 768px) {
+  /* Mobile View: 2-Column Grid matching Feature Cards */
   .why-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
@@ -3167,7 +3149,7 @@ display: grid;
   }
 }
 
-/* Floating Chat Container */
+/* Floating Chat Container (All screens) */
 .chat-widget-container {
   position: fixed;
   bottom: 24px;

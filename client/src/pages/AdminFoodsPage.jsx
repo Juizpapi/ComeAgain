@@ -47,6 +47,13 @@ const getAddonName = (addon) => {
   return String(addon);
 };
 
+// Helper function to sort food lists alphabetically A-Z
+const sortAlphabetically = (list) => {
+  return [...list].sort((a, b) =>
+    (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' })
+  );
+};
+
 function AdminFoodsPage() {
   const [foods, setFoods] = useState([]);
   const [deletedFoods, setDeletedFoods] = useState([]);
@@ -61,7 +68,9 @@ function AdminFoodsPage() {
   const loadMenu = async () => {
     try {
       const response = await request('/foods');
-      setFoods(response);
+      if (Array.isArray(response)) {
+        setFoods(sortAlphabetically(response));
+      }
     } catch (error) {
       console.error(error);
     }
@@ -101,16 +110,35 @@ function AdminFoodsPage() {
       };
 
       if (editingId) {
-        await request(`/foods/${editingId}`, {
+        const response = await request(`/foods/${editingId}`, {
           method: 'PUT',
           body: JSON.stringify(payload),
         });
+
+        const updatedItem = response?.food || response || { ...payload, _id: editingId };
+
+        // Update local state immediately with updated addons
+        setFoods((prev) =>
+          sortAlphabetically(
+            prev.map((f) =>
+              f._id === editingId
+                ? { ...f, ...updatedItem, addons: formattedAddons }
+                : f
+            )
+          )
+        );
         setMessage("Menu item updated successfully.");
       } else {
-        await request('/foods', {
+        const response = await request('/foods', {
           method: 'POST',
           body: JSON.stringify(payload),
         });
+
+        const newItem = response?.food || response || { ...payload, _id: Date.now().toString() };
+
+        setFoods((prev) =>
+          sortAlphabetically([...prev, { ...newItem, addons: formattedAddons }])
+        );
         setMessage("Menu item added successfully.");
       }
 
@@ -148,7 +176,7 @@ function AdminFoodsPage() {
     try {
       await request(`/foods/${food._id}`, { method: 'DELETE' }).catch(() => {});
       
-      setDeletedFoods((prev) => [...prev.filter((f) => f._id !== food._id), food]);
+      setDeletedFoods((prev) => sortAlphabetically([...prev.filter((f) => f._id !== food._id), food]));
       setFoods((prev) => prev.filter((f) => f._id !== food._id));
 
       setMessage("Menu item moved to trash.");
@@ -180,7 +208,7 @@ function AdminFoodsPage() {
 
       const newItem = restoredItem?.food || restoredItem || food;
 
-      setFoods((prev) => [...prev, newItem]);
+      setFoods((prev) => sortAlphabetically([...prev, newItem]));
       setDeletedFoods((prev) => prev.filter((f) => f._id !== food._id));
 
       setMessage("Menu item restored successfully.");
@@ -198,15 +226,17 @@ function AdminFoodsPage() {
 
   const displayedFoods = activeTab === 'active' ? foods : deletedFoods;
 
-  const filteredFoods = displayedFoods.filter((food) => {
-    const query = searchTerm.trim().toLowerCase();
-    if (!query) return true;
-    return (
-      food.name?.toLowerCase().includes(query) ||
-      food.category?.toLowerCase().includes(query) ||
-      (food.recommended || '').toLowerCase().includes(query)
-    );
-  });
+  const filteredFoods = sortAlphabetically(
+    displayedFoods.filter((food) => {
+      const query = searchTerm.trim().toLowerCase();
+      if (!query) return true;
+      return (
+        food.name?.toLowerCase().includes(query) ||
+        food.category?.toLowerCase().includes(query) ||
+        (food.recommended || '').toLowerCase().includes(query)
+      );
+    })
+  );
 
   return (
     <div className="admin-foods-page">
