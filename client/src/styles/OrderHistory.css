@@ -312,9 +312,9 @@
 
     .history-heading{
 
-        font-size:30px;
+        font-size:26px;
 
-        margin-bottom:25px;
+        margin-bottom:18px;
 
     }
 
@@ -323,11 +323,11 @@
 
     .history-empty{
 
-        padding:25px 15px;
+        padding:20px 12px;
 
-        font-size:16px;
+        font-size:15px;
 
-        border-radius:18px;
+        border-radius:14px;
 
     }
 
@@ -336,20 +336,22 @@
 
  .history-card{
 
-    padding:14px;
+    padding:12px 14px;
 
-    border-radius:16px;
+    border-radius:14px;
 
-    margin-bottom:14px;
+    margin-bottom:10px;
+
+    box-shadow:0 6px 16px rgba(0,0,0,.06);
 
 }
 
 
  .history-order-title{
 
-    font-size:18px;
+    font-size:16px;
 
-    margin-bottom:10px;
+    margin-bottom:6px;
 
 }
 
@@ -362,16 +364,18 @@
 
     flex-direction:column;
 
-    gap:12px;
+    gap:8px;
 
 }
 
 
  .history-items p{
 
-    font-size:13px;
+    font-size:12px;
 
-    line-height:1.4;
+    line-height:1.35;
+
+    margin:4px 0;
 
 }
 
@@ -380,7 +384,9 @@
 
         margin-left:0;
 
-        margin-top:3px;
+        margin-top:2px;
+
+        font-size:11px;
 
     }
 
@@ -389,9 +395,47 @@
 
     .history-status{
 
+        font-size:11px;
+
+        padding:4px 9px;
+
+    }
+
+    /* LEFT BORDER ON MOBILE */
+
+    .status-border-pending,
+    .status-border-preparing,
+    .status-border-out-for-delivery,
+    .status-border-delivered,
+    .status-border-cancelled {
+
+        border-left-width:5px;
+
+    }
+
+    /* BUTTONS */
+
+    .details-btn,
+    .order-btn,
+    .reviewed-btn {
+
+        padding:6px 12px;
+
         font-size:12px;
 
-        padding:6px 10px;
+        margin-top:6px;
+
+    }
+
+    .extra-details {
+
+        margin-top:8px;
+
+        padding:10px;
+
+        font-size:12px;
+
+        line-height:1.5;
 
     }
 
@@ -406,7 +450,7 @@
 
         width:100%;
 
-        margin-top:20px;
+        margin-top:15px;
 
     }
 
