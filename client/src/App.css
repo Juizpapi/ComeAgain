@@ -749,12 +749,13 @@
 }
 
 .food-item {
-  background: white;
+background: #ffffff;
   border-radius: 18px;
-  overflow: hidden;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, .1);
-  transition: .3s;
+  overflow: hidden; /* Clips image top corners */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .food-item:hover {
@@ -763,8 +764,9 @@
 
 .food-item img {
   width: 100%;
-  height: 220px;
-  object-fit: cover;
+  height: 180px; /* Constrains vertical height */
+  object-fit: cover; /* Keeps image sharp without distortion */
+  display: block;
 }
 
 .food-item h3 {
@@ -2498,4 +2500,17 @@
   .ca-profile-btn {
     padding: 10px;
   }
+
+  /* Fix food image scaling on mobile */
+  .food-item {
+    border-radius: 18px !important;
+    overflow: hidden !important; /* Clips sharp image corners to match card */
+  }
+
+  .food-item img {
+    width: 100% !important;
+    height: 140px !important; /* Keeps image size proportional */
+    object-fit: cover !important; /* Crops image neatly without stretching */
+  }
+  
 }
